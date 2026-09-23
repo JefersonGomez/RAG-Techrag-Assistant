@@ -15,6 +15,7 @@
     "@langchain/community": "^0.3.28",
     "@langchain/core": "^0.3.40",
     "@prisma/client": "^7.10.0",
+    "dotenv": "^18.0.3",
     "express": "^5.2.1",
     "fs-extra": "^11.4.1",
     "langchain": "^0.3.15",
