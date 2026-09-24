@@ -1,17 +1,34 @@
-// aca va la logica de embebido, entonces lo que pasa esque esto convierte testo en lejguajes de numeros llamada vector 
-//para que asi un LLM lo pueda entender
+// src/embeddings.ts
+import { InferenceClient } from "@huggingface/inference";
+import { Embeddings, type EmbeddingsParams } from "@langchain/core/embeddings";
 
-import { HuggingFaceInferenceEmbeddings } from "@langchain/community/embeddings/hf";
+const client = new InferenceClient(process.env.HUGGINGFACE_API_KEY);
+const MODEL = "BAAI/bge-m3";
 
-//esta libreria nos permitira traducir de texto a lenguaje numerico
-// en este caso usasmos Hugging face porque es gratis
+class HFEmbeddings extends Embeddings {
+  constructor(params: EmbeddingsParams = {}) {
+    super(params);
+  }
 
-// aca vamos a usar el modelo llamado "BAAI/bge-m3" un modele para busqueda semantica
+  async embedDocuments(texts: string[]): Promise<number[][]> {
+    const results: number[][] = [];
+    for (const text of texts) {
+      const vector = await client.featureExtraction({
+        model: MODEL,
+        inputs: text,
+      });
+      results.push(vector as number[]);
+    }
+    return results;
+  }
 
-//busqueda semantica : método para encontrar fragmentos de código fuente basándose 
-// en su significado y contexto en lugar de buscar coincidencias exactas de palabras clave
+  async embedQuery(text: string): Promise<number[]> {
+    const vector = await client.featureExtraction({
+      model: MODEL,
+      inputs: text,
+    });
+    return vector as number[];
+  }
+}
 
-export const embeddings = new HuggingFaceInferenceEmbeddings({
-    apiKey:process.env.HUGGINGFACE_API_KEY,
-    model: "BAAI/bge-m3"
-})
+export const embeddings = new HFEmbeddings();

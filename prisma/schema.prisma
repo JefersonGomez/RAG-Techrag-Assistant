@@ -12,7 +12,7 @@ model DocumentChunk {
   id        String   @id @default(uuid())
   content   String   
   metadata  Json     
-  embedding Float[]  
+  embedding Unsupported("vector(1024)")  
   
   @@map("document_chunks")
 }
