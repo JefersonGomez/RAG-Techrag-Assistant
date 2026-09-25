@@ -27,7 +27,7 @@ INSTRUCCIONES:
 
   const stream = await groq.chat.completions.create({
     messages: [{ role: "user", content: prompt }],
-    model: "llama-3.3-70b-versatile",
+    model: "openai/gpt-oss-20b",
     temperature: 0.1,
     stream: true, // ← CLAVE PARA SSE
   });

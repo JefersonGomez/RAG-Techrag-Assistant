@@ -1,6 +1,6 @@
-// src/ingestion.ts (Versión Nativa - Sin fs-extra)
-import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
-import * as fs from 'fs/promises'; // Módulo nativo de Node.js para promesas
+// src/ingestion.ts (Versión Corregida - Con soporte para customMetadata)
+import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
+import * as fs from 'fs/promises';
 import * as path from 'path';
 
 export interface DocumentChunk {
@@ -9,16 +9,20 @@ export interface DocumentChunk {
     source: string;
     type: 'code' | 'doc';
     language?: string;
+    [key: string]: string | undefined; // ← Permitir metadatos dinámicos adicionales
   };
 }
 
-export async function processDirectory(dirPath: string): Promise<DocumentChunk[]> {
+export async function processDirectory(
+  dirPath: string,
+  customMetadata?: Record<string, string>
+): Promise<DocumentChunk[]> {
   const chunks: DocumentChunk[] = [];
-  
+
   async function readDir(currentPath: string) {
     try {
       const files = await fs.readdir(currentPath);
-      
+
       for (const file of files) {
         const filePath = path.join(currentPath, file);
         const stat = await fs.stat(filePath);
@@ -32,8 +36,9 @@ export async function processDirectory(dirPath: string): Promise<DocumentChunk[]
           if (['.js', '.ts', '.md', '.txt'].includes(ext)) {
             const content = await fs.readFile(filePath, 'utf-8');
             const type = ['.js', '.ts'].includes(ext) ? 'code' : 'doc';
-            
-            const fileChunks = await splitContent(content, filePath, type, ext);
+
+            // ← Pasar customMetadata a splitContent
+            const fileChunks = await splitContent(content, filePath, type, ext, customMetadata);
             chunks.push(...fileChunks);
           }
         }
@@ -48,21 +53,26 @@ export async function processDirectory(dirPath: string): Promise<DocumentChunk[]
 }
 
 async function splitContent(
-  content: string, 
-  filePath: string, 
+  content: string,
+  filePath: string,
   type: 'code' | 'doc',
-  ext: string
+  ext: string,
+  customMetadata?: Record<string, string> // ← Recibir customMetadata
 ): Promise<DocumentChunk[]> {
   const splitter = new RecursiveCharacterTextSplitter({
-    chunkSize: 500,
+    chunkSize: 509,
     chunkOverlap: 50,
   });
 
-  const docs = await splitter.createDocuments([content], [{ 
-    source: filePath, 
+  // ← Fusionar metadatos base con customMetadata
+  const baseMetadata = {
+    source: filePath,
     type,
-    language: ext.replace('.', '')
-  }]);
+    language: ext.replace('.', ''),
+    ...customMetadata // ← Los metadatos personalizados sobrescriben o complementan
+  };
+
+  const docs = await splitter.createDocuments([content], [baseMetadata]);
 
   return docs.map(doc => ({
     content: doc.pageContent,
