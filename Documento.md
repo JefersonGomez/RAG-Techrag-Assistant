@@ -76,3 +76,11 @@ Filtrado Temprano: Descartar node_modules y carpetas ocultas antes de leerlos ah
 Tolerancia a Fallos Parcial: En ingestión de archivos, un error en un archivo no debe colapsar todo el pipeline. Warnear y continuar es mejor que crasher.
 
 Batching Respetuoso: Las APIs gratuitas tienen rate limits estrictos. Procesar en lotes pequeños (5-10) es la forma profesional de usarlas sin pagar.
+
+### nueva Fase
+
+cache semantica y Rate Limiting
+
+esto es para que ??
+preguntas repetidad no gasten tokens y n seguridad
+

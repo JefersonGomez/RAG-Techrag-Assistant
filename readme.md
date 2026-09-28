@@ -57,11 +57,16 @@ techrag-assistant/
 │   ├── config.ts          # Configuración Prisma 7
 │   └── schema.prisma      # Modelo DocumentChunk + pgvector
 ── src/
-│   ├── db.ts              # Singleton PrismaClient + Driver Adapter
-│   ├── ingestion.ts       # Lectura recursiva + chunking inteligente
-│   ├── embeddings.ts      # Cliente HuggingFace Embeddings
-│   ├── vector-store.ts    # Vectorización + persistencia SQL raw
-│   └── test-ingestion.ts  # Pipeline completo de validación
+│  src/
+├── index.ts              ← Entry point del servidor
+├── routes/
+│   └── ingest-repo.ts    ← Endpoint de clonado de repos
+├── ingestion.ts          ← Chunking + metadatos
+├── retriever.ts          ← Búsqueda semántica
+├── generator-stream.ts   ← LLM streaming SSE
+├── embeddings.ts         ← HuggingFace client
+├── vector-store.ts       ← Persistencia SQL raw
+└── db.ts                 ← Prisma singleton
 ├── data/                  # Archivos de prueba para ingestión
 ── LEARNING.md            # Diario técnico interno (no compartir públicamente)
 └── README.md
