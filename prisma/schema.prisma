@@ -5,14 +5,26 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql" // <--- Importante que esté aquí
+  provider = "postgresql"
 }
 
 model DocumentChunk {
-  id        String   @id @default(uuid())
+  id        String                 @id @default(uuid())
   content   String   
   metadata  Json     
   embedding Unsupported("vector(1024)")  
   
   @@map("document_chunks")
+}
+
+model UserFeedback {
+  id        String   @id @default(uuid())
+  query     String
+  response  String
+  rating    Int
+  chunkIds  String[]
+  createdAt DateTime @default(now())
+
+  @@index([rating])
+  @@index([createdAt])
 }
