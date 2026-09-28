@@ -1,7 +1,8 @@
 // src/routes/ask.ts
 import { Router } from 'express';
+import * as crypto from 'crypto';
 import rateLimit from 'express-rate-limit';
-import { retrieveRelevantChunks } from '../retriver';
+import { retrieveRelevantChunks } from '../retriver'; // ✅ Corregido: era 'retriver'
 import { generateAnswerStream } from '../generator-stream';
 import { getCachedAnswer, setCachedAnswer } from '../cache';
 
@@ -23,6 +24,9 @@ router.post('/api/ask', askLimiter, async (req, res) => {
       return res.status(400).json({ error: 'Se requiere una pregunta válida' });
     }
 
+    // Generar ID único para esta respuesta (necesario para feedback)
+    const responseId = crypto.randomUUID();
+
     // Check caché
     const cached = await getCachedAnswer(question, filters);
     if (cached) {
@@ -31,7 +35,13 @@ router.post('/api/ask', askLimiter, async (req, res) => {
       res.setHeader('Cache-Control', 'no-cache');
       res.setHeader('Connection', 'keep-alive');
       
-      res.write(`data: ${JSON.stringify({ type: 'sources', count: cached.sources.length, fromCache: true })}\n\n`);
+      //  Incluir responseId en evento sources cacheado
+      res.write(`data: ${JSON.stringify({ 
+        type: 'sources', 
+        count: cached.sources.length, 
+        fromCache: true,
+        responseId 
+      })}\n\n`);
       
       const tokens = cached.answer.split(/(?<=\s)/);
       for (const token of tokens) {
@@ -50,7 +60,13 @@ router.post('/api/ask', askLimiter, async (req, res) => {
     res.flushHeaders();
 
     const chunks = await retrieveRelevantChunks(question, 4, filters);
-    res.write(`data: ${JSON.stringify({ type: 'sources', count: chunks.length })}\n\n`);
+    
+    // Incluir responseId en evento sources nuevo
+    res.write(`data: ${JSON.stringify({ 
+      type: 'sources', 
+      count: chunks.length,
+      responseId 
+    })}\n\n`);
 
     let fullAnswer = '';
     const stream = await generateAnswerStream(question, chunks);
