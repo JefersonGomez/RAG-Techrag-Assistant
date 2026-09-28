@@ -28,3 +28,14 @@ model UserFeedback {
   @@index([rating])
   @@index([createdAt])
 }
+
+model RepoIngestion {
+  id          String   @id @default(uuid())
+  repoUrl     String   @unique
+  branch      String
+  lastCommit  String   // SHA del último commit procesado
+  chunksCount Int      @default(0)
+  updatedAt   DateTime @updatedAt
+  
+  @@index([repoUrl])
+}
