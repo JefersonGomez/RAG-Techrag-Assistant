@@ -1,4 +1,4 @@
-// src/ingestion.ts (Versión Corregida - Con soporte para customMetadata)
+// src/ingestion.ts (Sprint 4: Con soporte para customMetadata + Citas por Líneas)
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import * as fs from 'fs/promises';
 import * as path from 'path';
@@ -9,7 +9,9 @@ export interface DocumentChunk {
     source: string;
     type: 'code' | 'doc';
     language?: string;
-    [key: string]: string | undefined; // ← Permitir metadatos dinámicos adicionales
+    startLine?: number;   // ← NUEVO: Línea inicial del chunk
+    endLine?: number;     // ← NUEVO: Línea final del chunk
+    [key: string]: string | number | undefined; // ← Permitir metadatos dinámicos adicionales
   };
 }
 
@@ -37,7 +39,6 @@ export async function processDirectory(
             const content = await fs.readFile(filePath, 'utf-8');
             const type = ['.js', '.ts'].includes(ext) ? 'code' : 'doc';
 
-            // ← Pasar customMetadata a splitContent
             const fileChunks = await splitContent(content, filePath, type, ext, customMetadata);
             chunks.push(...fileChunks);
           }
@@ -57,25 +58,43 @@ async function splitContent(
   filePath: string,
   type: 'code' | 'doc',
   ext: string,
-  customMetadata?: Record<string, string> // ← Recibir customMetadata
+  customMetadata?: Record<string, string>
 ): Promise<DocumentChunk[]> {
   const splitter = new RecursiveCharacterTextSplitter({
     chunkSize: 509,
     chunkOverlap: 50,
   });
 
-  // ← Fusionar metadatos base con customMetadata
   const baseMetadata = {
     source: filePath,
     type,
     language: ext.replace('.', ''),
-    ...customMetadata // ← Los metadatos personalizados sobrescriben o complementan
+    ...customMetadata
   };
 
   const docs = await splitter.createDocuments([content], [baseMetadata]);
 
-  return docs.map(doc => ({
-    content: doc.pageContent,
-    metadata: doc.metadata as any
-  }));
+  // Cálculo aproximado de líneas basado en densidad de caracteres del archivo original
+  const lines = content.split('\n');
+  const totalChars = content.length;
+  const avgCharsPerLine = totalChars / Math.max(lines.length, 1);
+
+  return docs.map((doc, index) => {
+    // Estimación de posición basada en el índice del chunk y el tamaño efectivo (chunk - overlap)
+    const effectiveChunkSize = 509 - 50; 
+    const chunkStartPos = index * effectiveChunkSize;
+    const chunkEndPos = chunkStartPos + doc.pageContent.length;
+    
+    const startLine = Math.min(Math.floor(chunkStartPos / avgCharsPerLine) + 1, lines.length);
+    const endLine = Math.min(Math.floor(chunkEndPos / avgCharsPerLine) + 1, lines.length);
+
+    return {
+      content: doc.pageContent,
+      metadata: {
+        ...doc.metadata,
+        startLine,
+        endLine,
+      } as any,
+    };
+  });
 }

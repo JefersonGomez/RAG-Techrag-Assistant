@@ -1,6 +1,6 @@
 // src/generator-stream.ts
 import Groq from "groq-sdk";
-
+import * as path from 'path';
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 export async function* generateAnswerStream(
@@ -9,8 +9,16 @@ export async function* generateAnswerStream(
 ): AsyncGenerator<string> {
   
   const formattedContext = context
-    .map((chunk, i) => `[Fuente ${i + 1}]\n${chunk.content}`)
-    .join("\n\n---\n\n");
+  .map((chunk, i) => {
+    const source = chunk.metadata?.source 
+      ? path.basename(chunk.metadata.source) 
+      : "Documento desconocido";
+    const lines = chunk.metadata?.startLine && chunk.metadata?.endLine
+      ? ` (líneas ${chunk.metadata.startLine}-${chunk.metadata.endLine})`
+      : '';
+    return `[Fuente ${i + 1}: ${source}${lines}]\n${chunk.content}`;
+  })
+  .join("\n\n---\n\n");
 
   const prompt = `Eres un asistente técnico experto. Responde SOLO usando el contexto proporcionado.
 

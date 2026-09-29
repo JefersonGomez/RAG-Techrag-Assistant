@@ -4,6 +4,7 @@ import { prisma } from "./db";
 import { embeddings } from "./embeddings";
 
 export interface RetrievedChunk {
+  id?: string;
   content: string;
   metadata: Record<string, any>;
   score: number;
