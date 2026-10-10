@@ -7,11 +7,8 @@ export async function storeChuncks(chunks: DocumentChunk[]) {
   console.log(`🔄 Procesando ${chunks.length} fragmentos...`);
 
   // ¿Por qué procesar en lotes (batches)?
-  // La API gratuita de HuggingFace tiene límites de velocidad (rate limits).
-  // Si enviamos 1000 chunks de golpe, nos bloquearán.
-  // 5 es un número seguro para la capa gratuita.
-
-  const BATCH_SIZE = 5;
+  // El modelo corre local: lotes medianos aprovechan la CPU sin disparar la RAM.
+  const BATCH_SIZE = 16;
   let stored = 0;
 
   for (let i = 0; i < chunks.length; i += BATCH_SIZE) {

@@ -9,12 +9,6 @@ const router = Router();
 const checks: Record<string, () => Promise<unknown>> = {
   supabase: () => prisma.$queryRaw`SELECT 1`,
   groq: () => new Groq({ apiKey: process.env.GROQ_API_KEY }).models.list(),
-  huggingface: async () => {
-    const r = await fetch("https://huggingface.co/api/whoami-v2", {
-      headers: { Authorization: `Bearer ${process.env.HUGGINGFACE_API_KEY}` },
-    });
-    if (!r.ok) throw new Error(`HTTP ${r.status}`);
-  },
   redis: () => redis.ping(),
 };
 
