@@ -1,0 +1,18 @@
+# /etc/systemd/system/techrag.service
+[Unit]
+Description=TechRAG Assistant API
+After=network.target redis-server.service
+
+[Service]
+User=techrag
+WorkingDirectory=/opt/techrag-assistant
+Environment=NODE_ENV=production PORT=3001 MODEL_THREADS=2
+ExecStart=/usr/bin/npm start
+Restart=always
+RestartSec=5
+# Tope de recursos: si TechRAG se desborda, se reinicia solo él y no afecta al portfolio
+MemoryMax=4G
+CPUQuota=200%
+
+[Install]
+WantedBy=multi-user.target

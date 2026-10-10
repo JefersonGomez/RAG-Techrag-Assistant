@@ -29,6 +29,8 @@ function getReranker() {
   }));
 }
 
+export const warmupReranker = () => getReranker().then(() => undefined);
+
 /**
  * Re-ordena chunks usando cross-encoder bge-reranker-v2-m3.
  * @param query - La pregunta original
