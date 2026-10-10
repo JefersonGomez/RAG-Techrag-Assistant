@@ -1,11 +1,12 @@
 // src/routes/ask.ts
 import { Router } from 'express';
-import * as crypto from 'crypto';
 import rateLimit from 'express-rate-limit';
 import { retrieveRelevantChunks, parseFilters } from '../retriver';
 import { generateAnswerStream } from '../generator-stream';
 import { getCachedAnswer, setCachedAnswer } from '../cache';
 import { rerankChunks } from '../reranker';
+import { requireAuth } from '../auth';
+import { prisma } from '../db';
 
 const router = Router();
 
@@ -17,96 +18,99 @@ const askLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-router.post('/api/ask', askLimiter, async (req, res) => {
+type Chunk = { id?: string; content: string; metadata: Record<string, any>; score: number; rerankScore?: number };
+
+// Lo que ve el frontend de cada fuente (la "tracklist" de la respuesta)
+function toSources(chunks: Chunk[]) {
+  return chunks.map((c) => ({
+    id: c.id,
+    source: c.metadata?.source ?? 'desconocido',
+    repoUrl: c.metadata?.repoUrl,
+    startLine: c.metadata?.startLine,
+    endLine: c.metadata?.endLine,
+    score: c.rerankScore ?? c.score,
+    content: c.content,
+  }));
+}
+
+router.post('/api/ask', requireAuth, askLimiter, async (req, res) => {
+  const { question, conversationId } = req.body ?? {};
+
+  if (!question || typeof question !== 'string' || question.length > 2000) {
+    return res.status(400).json({ error: 'Se requiere una pregunta válida (máx. 2000 caracteres)' });
+  }
+  if (conversationId !== undefined && typeof conversationId !== 'string') {
+    return res.status(400).json({ error: 'conversationId inválido' });
+  }
+
+  let filters: Record<string, string> | undefined;
   try {
-    const { question } = req.body;
+    filters = parseFilters(req.body.filters);
+  } catch (err) {
+    return res.status(400).json({ error: (err as Error).message });
+  }
 
-    if (!question || typeof question !== 'string') {
-      return res.status(400).json({ error: 'Se requiere una pregunta válida' });
-    }
+  const userId: string = res.locals.user.id;
+  const conversation = conversationId
+    ? await prisma.conversation.findFirst({ where: { id: conversationId, userId } })
+    : await prisma.conversation.create({
+        data: { userId, title: question.trim().slice(0, 80), repoUrl: filters?.repoUrl },
+      });
+  if (!conversation) return res.status(404).json({ error: 'Conversación no encontrada' });
 
-    let filters: Record<string, string> | undefined;
-    try {
-      filters = parseFilters(req.body.filters);
-    } catch (err) {
-      return res.status(400).json({ error: (err as Error).message });
-    }
+  await prisma.message.create({ data: { conversationId: conversation.id, role: 'user', content: question } });
 
-    // Generar ID único para esta respuesta (necesario para feedback)
-    const responseId = crypto.randomUUID();
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+  res.flushHeaders();
+  const send = (data: unknown) => res.write(`data: ${JSON.stringify(data)}\n\n`);
 
-    // Check caché
+  try {
+    send({ type: 'conversation', conversationId: conversation.id });
+
+    let answer = '';
+    let sources: ReturnType<typeof toSources>;
+
     const cached = await getCachedAnswer(question, filters);
     if (cached) {
       console.log('💾 Respuesta servida desde caché');
-      res.setHeader('Content-Type', 'text/event-stream');
-      res.setHeader('Cache-Control', 'no-cache');
-      res.setHeader('Connection', 'keep-alive');
-      
-      //  Incluir responseId en evento sources cacheado
-      res.write(`data: ${JSON.stringify({ 
-        type: 'sources', 
-        count: cached.sources.length, 
-        chunkIds: cached.sources.map(c => c.id).filter(Boolean),
-        fromCache: true,
-        responseId 
-      })}\n\n`);
-      
-      const tokens = cached.answer.split(/(?<=\s)/);
-      for (const token of tokens) {
-        res.write(`data: ${JSON.stringify({ type: 'token', content: token })}\n\n`);
+      sources = toSources(cached.sources);
+      send({ type: 'sources', sources, fromCache: true });
+      for (const token of cached.answer.split(/(?<=\s)/)) {
+        answer += token;
+        send({ type: 'token', content: token });
         await new Promise(r => setTimeout(r, 10));
       }
-      
-      res.write(`data: [DONE]\n\n`);
-      return res.end();
+    } else {
+      const rawChunks = await retrieveRelevantChunks(question, 20, filters); // ← Pedir 20 candidatos baratos
+      const chunks = rawChunks.length > 4
+        ? await rerankChunks(question, rawChunks, 4)  // ← Re-rankear solo si hay suficientes
+        : rawChunks.map(c => ({ ...c, rerankScore: c.score }));
+
+      sources = toSources(chunks);
+      send({ type: 'sources', sources });
+
+      for await (const token of generateAnswerStream(question, chunks)) {
+        answer += token;
+        send({ type: 'token', content: token });
+      }
+
+      await setCachedAnswer(question, filters, { answer, sources: chunks, timestamp: Date.now() });
     }
 
-    // Sin caché: proceder normal
-    res.setHeader('Content-Type', 'text/event-stream');
-    res.setHeader('Cache-Control', 'no-cache');
-    res.setHeader('Connection', 'keep-alive');
-    res.flushHeaders();
-
-    const rawChunks = await retrieveRelevantChunks(question, 20, filters); // ← Pedir 20 candidatos baratos
-    const chunks = rawChunks.length > 4 
-      ? await rerankChunks(question, rawChunks, 4)  // ← Re-rankear solo si hay suficientes
-      : rawChunks.map(c => ({ ...c, rerankScore: c.score })); 
-    
-    // Incluir responseId en evento sources nuevo
-    res.write(`data: ${JSON.stringify({ 
-      type: 'sources', 
-      count: chunks.length,
-      chunkIds: chunks.map(c => c.id).filter(Boolean),
-      responseId 
-    })}\n\n`);
-
-    let fullAnswer = '';
-    const stream = await generateAnswerStream(question, chunks);
-    
-    for await (const chunk of stream) {
-      fullAnswer += chunk;
-      res.write(`data: ${JSON.stringify({ type: 'token', content: chunk })}\n\n`);
-    }
-
-    await setCachedAnswer(question, filters, {
-      answer: fullAnswer,
-      sources: chunks,
-      timestamp: Date.now()
+    const message = await prisma.message.create({
+      data: { conversationId: conversation.id, role: 'assistant', content: answer, sources },
     });
+    await prisma.conversation.update({ where: { id: conversation.id }, data: { updatedAt: new Date() } });
 
-    res.write(`data: [DONE]\n\n`);
-    res.end();
-
+    send({ type: 'done', conversationId: conversation.id, messageId: message.id });
   } catch (error) {
     console.error('Error en /api/ask:', error);
-    res.write(`data: ${JSON.stringify({ 
-      type: 'error', 
-      message: error instanceof Error ? error.message : 'Error interno' 
-    })}\n\n`);
-    res.write(`data: [DONE]\n\n`);
-    res.end();
+    send({ type: 'error', message: error instanceof Error ? error.message : 'Error interno' });
   }
+  res.write(`data: [DONE]\n\n`);
+  res.end();
 });
 
 export default router;

@@ -1,79 +1,101 @@
-# Despliegue en VPS (Linux + nginx + DuckDNS)
+# Despliegue en VPS (Ubuntu 24.04 + nginx + DuckDNS)
 
-TechRAG corre en el puerto `3001` (solo localhost) y nginx lo publica en `rag.TU_DOMINIO.duckdns.org`,
-junto al portfolio. DuckDNS resuelve cualquier subdominio de tu dominio a la misma IP: no hay que crear nada allí.
+TechRAG (API + frontend) corre en el puerto `3001`, solo en localhost, y nginx lo publica en
+**`rag.jefersonbustamante.duckdns.org`**, junto al portfolio. DuckDNS ya resuelve cualquier subdominio
+de `jefersonbustamante.duckdns.org` a la IP del VPS: no hay que crear nada allí.
 
-Los comandos asumen Ubuntu/Debian. Reemplaza `TU_DOMINIO` por tu dominio de DuckDNS.
+Los comandos son para ejecutar como `root` (`ssh root@169.58.105.198`).
 
 ## 1. Dependencias del sistema
 
 ```bash
 node -v   # si no hay Node 22+:
-curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
-sudo apt install -y nodejs git redis-server
-sudo systemctl enable --now redis-server
+curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
+apt install -y nodejs git redis-server
+systemctl enable --now redis-server
 ```
 
-## 2. Código
+## 2. App OAuth de GitHub (una sola vez)
+
+En https://github.com/settings/developers → **OAuth Apps** → **New OAuth App**:
+
+- Application name: `TechRAG Assistant`
+- Homepage URL: `https://rag.jefersonbustamante.duckdns.org`
+- Authorization callback URL: `https://rag.jefersonbustamante.duckdns.org/auth/github/callback`
+
+Copia el **Client ID** y genera un **Client secret** (se usan en el paso 4).
+
+## 3. Código
 
 ```bash
-sudo useradd --system --create-home --shell /usr/sbin/nologin techrag
-sudo git clone https://github.com/JefersonGomez/RAG-Techrag-Assistant.git /opt/techrag-assistant
-sudo chown -R techrag:techrag /opt/techrag-assistant
+useradd --system --create-home --shell /usr/sbin/nologin techrag
+git clone https://github.com/JefersonGomez/RAG-Techrag-Assistant.git /opt/techrag-assistant
+chown -R techrag:techrag /opt/techrag-assistant
 cd /opt/techrag-assistant
 sudo -u techrag npm ci --legacy-peer-deps
+sudo -u techrag npm run build:web
 ```
 
-## 3. Variables de entorno
+## 4. Variables de entorno
 
 ```bash
-sudo -u techrag nano /opt/techrag-assistant/.env
+sudo -u techrag cp .env.example .env
+sudo -u techrag nano .env
+chmod 600 .env
 ```
 
+Rellena (ver `.env.example`):
+
 ```env
-DATABASE_URL="postgresql://..."   # Session Pooler de Supabase
+DATABASE_URL="postgresql://..."            # Session Pooler de Supabase
 DIRECT_URL="postgresql://..."
 GROQ_API_KEY="gsk_..."
 REDIS_URL="redis://127.0.0.1:6379"
+GITHUB_CLIENT_ID="..."                      # paso 2
+GITHUB_CLIENT_SECRET="..."                  # paso 2
+APP_URL="https://rag.jefersonbustamante.duckdns.org"
+JWT_SECRET="..."                            # pega la salida de: openssl rand -hex 32
+ADMIN_GITHUB_LOGIN="JefersonGomez"
 ```
 
 ```bash
-sudo chmod 600 /opt/techrag-assistant/.env
 sudo -u techrag npx prisma generate
 sudo -u techrag npx prisma migrate deploy   # no hace nada si ya están aplicadas
 ```
 
-## 4. Servicio (arranca solo y se reinicia si falla)
+## 5. Servicio (arranca solo y se reinicia si falla)
 
 ```bash
-sudo cp deploy/techrag.service /etc/systemd/system/
-sudo systemctl daemon-reload
-sudo systemctl enable --now techrag
+cp deploy/techrag.service /etc/systemd/system/
+systemctl daemon-reload
+systemctl enable --now techrag
 journalctl -u techrag -f   # espera "🧠 Modelos locales cargados" (la 1ª vez descarga ~1,1 GB)
 ```
 
-## 5. nginx + HTTPS
+## 6. nginx + HTTPS
 
 ```bash
-sudo cp deploy/nginx-techrag.conf /etc/nginx/sites-available/techrag
-sudo sed -i 's/TU_DOMINIO/tu-dominio-real/' /etc/nginx/sites-available/techrag
-sudo ln -s /etc/nginx/sites-available/techrag /etc/nginx/sites-enabled/
-sudo nginx -t && sudo systemctl reload nginx
-sudo certbot --nginx -d rag.TU_DOMINIO.duckdns.org   # sudo apt install certbot python3-certbot-nginx si no está
+cp deploy/nginx-techrag.conf /etc/nginx/sites-available/techrag
+ln -s /etc/nginx/sites-available/techrag /etc/nginx/sites-enabled/
+nginx -t && systemctl reload nginx
+certbot --nginx -d rag.jefersonbustamante.duckdns.org --redirect
 ```
 
-## 6. Verificar
+## 7. Verificar
 
 ```bash
-curl https://rag.TU_DOMINIO.duckdns.org/api/health
+curl https://rag.jefersonbustamante.duckdns.org/api/health
 ```
+
+Abre https://rag.jefersonbustamante.duckdns.org, entra con GitHub y, como admin, ve a **Grabar cinta**
+para indexar un repo.
 
 ## Actualizar a una nueva versión
 
 ```bash
 cd /opt/techrag-assistant
 sudo -u techrag git pull
-sudo -u techrag npm ci --legacy-peer-deps && sudo -u techrag npx prisma generate
-sudo -u techrag npx prisma migrate deploy
-sudo systemctl restart techrag
+sudo -u techrag npm ci --legacy-peer-deps && sudo -u techrag npm run build:web
+sudo -u techrag npx prisma generate && sudo -u techrag npx prisma migrate deploy
+systemctl restart techrag
 ```

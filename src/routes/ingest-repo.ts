@@ -9,6 +9,7 @@ import { processDirectory, processFile, isIndexable } from '../ingestion';
 import { storeChuncks, deleteChunks } from '../vector-store';
 import { invalidateCache } from '../cache';
 import { prisma } from '../db';
+import { requireAdmin } from '../auth';
 
 const router = Router();
 
@@ -26,7 +27,7 @@ const BRANCH_RE = /^(?!-)(?!.*\.\.)[\w./-]{1,100}$/;
 // ponytail: lock en memoria, solo vale con una instancia; usar lock en DB/Redis si se escala
 const inProgress = new Set<string>();
 
-router.post('/api/ingest-repo', ingestLimiter, async (req, res) => {
+router.post('/api/ingest-repo', requireAdmin, ingestLimiter, async (req, res) => {
   const { repoUrl, branch = 'main' } = req.body || {};
   if (typeof repoUrl !== 'string' || typeof branch !== 'string') {
     return res.status(400).json({ error: 'Se requiere repoUrl válido' });

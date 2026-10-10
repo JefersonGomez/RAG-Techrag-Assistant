@@ -38,3 +38,39 @@ model RepoIngestion {
 
   @@index([repoUrl])
 }
+
+model User {
+  id            String         @id @default(uuid())
+  githubId      Int            @unique
+  login         String
+  name          String?
+  avatarUrl     String?
+  createdAt     DateTime       @default(now())
+  conversations Conversation[]
+}
+
+model Conversation {
+  id        String    @id @default(uuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  repoUrl   String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  messages  Message[]
+
+  @@index([userId, updatedAt])
+}
+
+model Message {
+  id             String       @id @default(uuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  role           String // 'user' | 'assistant'
+  content        String
+  sources        Json?
+  rating         Int? // feedback del usuario: 1 = 👎, 2 = 👍
+  createdAt      DateTime     @default(now())
+
+  @@index([conversationId, createdAt])
+}

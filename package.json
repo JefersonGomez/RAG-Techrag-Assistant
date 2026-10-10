@@ -5,7 +5,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "tsx src/index.ts",
-    "dev": "tsx watch src/index.ts"
+    "dev": "tsx watch src/index.ts",
+    "dev:web": "npm --prefix web run dev",
+    "build:web": "npm --prefix web ci && npm --prefix web run build"
   },
   "keywords": [],
   "author": "",
@@ -17,7 +19,6 @@
     "@langchain/core": "^0.3.40",
     "@prisma/adapter-pg": "^7.10.0",
     "@prisma/client": "^7.10.0",
-    "cors": "^2.8.6",
     "dotenv": "^18.0.3",
     "express": "^5.2.1",
     "express-rate-limit": "^8.7.0",
@@ -31,9 +32,9 @@
     "simple-git": "^4.0.2"
   },
   "devDependencies": {
-    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/ioredis": "^4.28.10",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^26.6.3",
     "ts-node": "^10.9.2",
     "tsx": "^4.23.15",

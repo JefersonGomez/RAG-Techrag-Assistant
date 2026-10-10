@@ -1,30 +1,25 @@
 import { Router } from "express";
 import { prisma } from "../db";
+import { requireAuth } from "../auth";
 
 const router = Router();
 
-router.post("/api/feedback", async (req, res) => {
+// rating: 1 = 👎, 2 = 👍, null = quitar la valoración
+router.post("/api/feedback", requireAuth, async (req, res) => {
   try {
-    const { query, response, rating, chunkIds } = req.body;
+    const { messageId, rating } = req.body ?? {};
 
-    const validChunkIds = chunkIds === undefined
-      || (Array.isArray(chunkIds) && chunkIds.every((id) => typeof id === "string"));
-
-    if (typeof query !== "string" || typeof response !== "string" || !query || !response
-      || ![1, 2].includes(rating) || !validChunkIds) {
-      return res.status(400).json({
-        error: "Se requiere query, response, rating (1 o 2) y chunkIds opcional (string[])",
-      });
+    if (typeof messageId !== "string" || ![1, 2, null].includes(rating)) {
+      return res.status(400).json({ error: "Se requiere messageId y rating (1, 2 o null)" });
     }
 
-    await prisma.userFeedback.create({
-      data: {
-        query,
-        response,
-        rating,
-        chunkIds: chunkIds || [],
-      },
+    // Solo el dueño de la conversación puede valorar sus respuestas
+    const { count } = await prisma.message.updateMany({
+      where: { id: messageId, role: "assistant", conversation: { userId: res.locals.user.id } },
+      data: { rating },
     });
+    if (count === 0) return res.status(404).json({ error: "Mensaje no encontrado" });
+
     res.json({ message: "Feedback registrado exitosamente" });
   } catch (error) {
     console.error("Error en /api/feedback:", error);

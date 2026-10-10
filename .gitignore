@@ -4,3 +4,6 @@ node_modules/
 dist
 generated
 models/
+.impeccable/review/
+.impeccable/refs/
+.impeccable/direction-payload.json
