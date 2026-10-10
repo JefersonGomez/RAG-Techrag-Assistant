@@ -10,16 +10,13 @@ class HFEmbeddings extends Embeddings {
     super(params);
   }
 
+  // Una sola llamada para todo el lote: la API acepta un array de textos
   async embedDocuments(texts: string[]): Promise<number[][]> {
-    const results: number[][] = [];
-    for (const text of texts) {
-      const vector = await client.featureExtraction({
-        model: MODEL,
-        inputs: text,
-      });
-      results.push(vector as number[]);
-    }
-    return results;
+    const vectors = await client.featureExtraction({
+      model: MODEL,
+      inputs: texts,
+    });
+    return vectors as number[][];
   }
 
   async embedQuery(text: string): Promise<number[]> {

@@ -1,52 +1,35 @@
 import { Router } from "express";
 import { prisma } from "../db";
 import { Groq } from "groq-sdk";
-import { HuggingFaceInferenceEmbeddings } from "@langchain/community/embeddings/hf";
+import { redis } from "../cache";
 
 const router = Router();
 
+// Chequeos que validan credenciales sin gastar tokens ni cuota de inferencia
+const checks: Record<string, () => Promise<unknown>> = {
+  supabase: () => prisma.$queryRaw`SELECT 1`,
+  groq: () => new Groq({ apiKey: process.env.GROQ_API_KEY }).models.list(),
+  huggingface: async () => {
+    const r = await fetch("https://huggingface.co/api/whoami-v2", {
+      headers: { Authorization: `Bearer ${process.env.HUGGINGFACE_API_KEY}` },
+    });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  },
+  redis: () => redis.ping(),
+};
+
 router.get("/api/health", async (req, res) => {
-  const checks: Record<string, string> = {};
-  let allHealthy = true;
-
-  // verificar supabase
-  try {
-    await prisma.$queryRaw`SELECT 1`;
-    checks.supabase = "OK";
-  } catch {
-    checks.supabase = "FALLIDO";
-    allHealthy = false;
-  }
-
-  // 2. Verificar Groq
-  try {
-    const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-    await groq.chat.completions.create({
-      messages: [{ role: "user", content: "test" }],
-      model: "openai/gpt-oss-20b",
-      max_tokens: 1,
-    });
-    checks.groq = "✅ OK";
-  } catch {
-    checks.groq = "❌ FALLIDO";
-    allHealthy = false;
-  }
-
-  try {
-    const embeddings = new HuggingFaceInferenceEmbeddings({
-      apiKey: process.env.HUGGINGFACE_API_KEY,
-      model: "BAAI/bge-m3",
-    });
-    await embeddings.embedQuery("test");
-    checks.huggingface = "✅ OK";
-  } catch {
-    checks.huggingface = "❌ FALLIDO";
-    allHealthy = false;
-  }
+  const names = Object.keys(checks);
+  const results = await Promise.allSettled(names.map((name) => checks[name]()));
+  const status = Object.fromEntries(
+    names.map((name, i) => [name, results[i].status === "fulfilled" ? "OK" : "FALLIDO"])
+  );
+  // Redis es opcional: sin él /api/ask sigue funcionando sin caché
+  const allHealthy = names.every((name) => name === "redis" || status[name] === "OK");
 
   res.status(allHealthy ? 200 : 503).json({
     status: allHealthy ? "healthy" : "degraded",
-    checks,
+    checks: status,
     timestamp: new Date().toISOString(),
   });
 });

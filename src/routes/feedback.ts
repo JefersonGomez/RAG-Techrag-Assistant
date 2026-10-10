@@ -7,9 +7,13 @@ router.post("/api/feedback", async (req, res) => {
   try {
     const { query, response, rating, chunkIds } = req.body;
 
-    if (!query || !response || !rating || ![1, 2].includes(rating)) {
+    const validChunkIds = chunkIds === undefined
+      || (Array.isArray(chunkIds) && chunkIds.every((id) => typeof id === "string"));
+
+    if (typeof query !== "string" || typeof response !== "string" || !query || !response
+      || ![1, 2].includes(rating) || !validChunkIds) {
       return res.status(400).json({
-        error: "Se requiere query, response y rating (1 o 2)",
+        error: "Se requiere query, response, rating (1 o 2) y chunkIds opcional (string[])",
       });
     }
 

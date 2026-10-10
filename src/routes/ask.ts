@@ -2,7 +2,7 @@
 import { Router } from 'express';
 import * as crypto from 'crypto';
 import rateLimit from 'express-rate-limit';
-import { retrieveRelevantChunks } from '../retriver'; // ✅ Corregido: era 'retriver'
+import { retrieveRelevantChunks, parseFilters } from '../retriver';
 import { generateAnswerStream } from '../generator-stream';
 import { getCachedAnswer, setCachedAnswer } from '../cache';
 import { rerankChunks } from '../reranker';
@@ -19,10 +19,17 @@ const askLimiter = rateLimit({
 
 router.post('/api/ask', askLimiter, async (req, res) => {
   try {
-    const { question, filters } = req.body;
+    const { question } = req.body;
 
     if (!question || typeof question !== 'string') {
       return res.status(400).json({ error: 'Se requiere una pregunta válida' });
+    }
+
+    let filters: Record<string, string> | undefined;
+    try {
+      filters = parseFilters(req.body.filters);
+    } catch (err) {
+      return res.status(400).json({ error: (err as Error).message });
     }
 
     // Generar ID único para esta respuesta (necesario para feedback)
@@ -40,6 +47,7 @@ router.post('/api/ask', askLimiter, async (req, res) => {
       res.write(`data: ${JSON.stringify({ 
         type: 'sources', 
         count: cached.sources.length, 
+        chunkIds: cached.sources.map(c => c.id).filter(Boolean),
         fromCache: true,
         responseId 
       })}\n\n`);
@@ -61,14 +69,15 @@ router.post('/api/ask', askLimiter, async (req, res) => {
     res.flushHeaders();
 
     const rawChunks = await retrieveRelevantChunks(question, 20, filters); // ← Pedir 20 candidatos baratos
-const chunks = rawChunks.length > 4 
-  ? await rerankChunks(question, rawChunks, 4)  // ← Re-rankear solo si hay suficientes
-  : rawChunks.map(c => ({ ...c, rerankScore: c.score })); 
+    const chunks = rawChunks.length > 4 
+      ? await rerankChunks(question, rawChunks, 4)  // ← Re-rankear solo si hay suficientes
+      : rawChunks.map(c => ({ ...c, rerankScore: c.score })); 
     
     // Incluir responseId en evento sources nuevo
     res.write(`data: ${JSON.stringify({ 
       type: 'sources', 
       count: chunks.length,
+      chunkIds: chunks.map(c => c.id).filter(Boolean),
       responseId 
     })}\n\n`);
 

@@ -3,17 +3,31 @@ import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 
+export const SUPPORTED_EXTS = ['.js', '.ts', '.md', '.txt'];
+
 export interface DocumentChunk {
   content: string;
   metadata: {
-    source: string;
+    source: string;       // Ruta relativa a la raíz del repo, con '/' (ej: "src/db.ts")
     type: 'code' | 'doc';
     language?: string;
-    startLine?: number;   // ← NUEVO: Línea inicial del chunk
-    endLine?: number;     // ← NUEVO: Línea final del chunk
+    startLine?: number;   // ← Línea inicial del chunk
+    endLine?: number;     // ← Línea final del chunk
     [key: string]: string | number | undefined; // ← Permitir metadatos dinámicos adicionales
   };
 }
+
+// Mismo criterio que processDirectory, para rutas de git (con '/'): ignora carpetas ocultas y node_modules
+export function isIndexable(file: string): boolean {
+  const dirs = file.split('/').slice(0, -1);
+  return SUPPORTED_EXTS.includes(path.extname(file).toLowerCase())
+    && !dirs.some(d => d.startsWith('.') || d === 'node_modules');
+}
+
+const splitter = new RecursiveCharacterTextSplitter({
+  chunkSize: 509,
+  chunkOverlap: 50,
+});
 
 export async function processDirectory(
   dirPath: string,
@@ -33,15 +47,9 @@ export async function processDirectory(
           if (!file.startsWith('.') && file !== 'node_modules') {
             await readDir(filePath);
           }
-        } else {
-          const ext = path.extname(file).toLowerCase();
-          if (['.js', '.ts', '.md', '.txt'].includes(ext)) {
-            const content = await fs.readFile(filePath, 'utf-8');
-            const type = ['.js', '.ts'].includes(ext) ? 'code' : 'doc';
-
-            const fileChunks = await splitContent(content, filePath, type, ext, customMetadata);
-            chunks.push(...fileChunks);
-          }
+        } else if (SUPPORTED_EXTS.includes(path.extname(file).toLowerCase())) {
+          const relPath = path.relative(dirPath, filePath).split(path.sep).join('/');
+          chunks.push(...await processFile(dirPath, relPath, customMetadata));
         }
       }
     } catch (error) {
@@ -53,20 +61,18 @@ export async function processDirectory(
   return chunks;
 }
 
-async function splitContent(
-  content: string,
-  filePath: string,
-  type: 'code' | 'doc',
-  ext: string,
+/** Procesa un solo archivo. relPath usa '/' y es relativo a rootDir. */
+export async function processFile(
+  rootDir: string,
+  relPath: string,
   customMetadata?: Record<string, string>
 ): Promise<DocumentChunk[]> {
-  const splitter = new RecursiveCharacterTextSplitter({
-    chunkSize: 509,
-    chunkOverlap: 50,
-  });
+  const ext = path.extname(relPath).toLowerCase();
+  const content = await fs.readFile(path.join(rootDir, relPath), 'utf-8');
+  const type = ['.js', '.ts'].includes(ext) ? 'code' : 'doc';
 
   const baseMetadata = {
-    source: filePath,
+    source: relPath,
     type,
     language: ext.replace('.', ''),
     ...customMetadata
@@ -74,27 +80,16 @@ async function splitContent(
 
   const docs = await splitter.createDocuments([content], [baseMetadata]);
 
-  // Cálculo aproximado de líneas basado en densidad de caracteres del archivo original
-  const lines = content.split('\n');
-  const totalChars = content.length;
-  const avgCharsPerLine = totalChars / Math.max(lines.length, 1);
-
-  return docs.map((doc, index) => {
-    // Estimación de posición basada en el índice del chunk y el tamaño efectivo (chunk - overlap)
-    const effectiveChunkSize = 509 - 50; 
-    const chunkStartPos = index * effectiveChunkSize;
-    const chunkEndPos = chunkStartPos + doc.pageContent.length;
-    
-    const startLine = Math.min(Math.floor(chunkStartPos / avgCharsPerLine) + 1, lines.length);
-    const endLine = Math.min(Math.floor(chunkEndPos / avgCharsPerLine) + 1, lines.length);
-
+  // LangChain calcula las líneas reales de cada chunk en metadata.loc.lines
+  return docs.map((doc) => {
+    const { loc, ...metadata } = doc.metadata;
     return {
       content: doc.pageContent,
       metadata: {
-        ...doc.metadata,
-        startLine,
-        endLine,
-      } as any,
+        ...metadata,
+        startLine: loc?.lines?.from,
+        endLine: loc?.lines?.to,
+      } as DocumentChunk['metadata'],
     };
   });
 }
