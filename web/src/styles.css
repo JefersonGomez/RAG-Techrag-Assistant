@@ -354,6 +354,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
 }
 
 .track-static { cursor: default; }
+.track-row { display: flex; align-items: center; gap: 0.25rem; }
+.track-row .track-btn { flex: 1; min-width: 0; }
 .track-static:hover { background: transparent; }
 .flap-foot .btn[aria-current='true'] { border-color: var(--red); color: var(--red); background: var(--red-wash); }
 /* En escritorio el logout vive en el lomo; en móvil el lomo se oculta y aparece en la solapa */

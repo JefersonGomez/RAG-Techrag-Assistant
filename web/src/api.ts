@@ -45,6 +45,8 @@ export const api = {
   deleteConversation: (id: string) => request(`/api/conversations/${id}`, { method: 'DELETE' }),
   feedback: (messageId: string, rating: 1 | 2 | null) =>
     request('/api/feedback', { method: 'POST', body: JSON.stringify({ messageId, rating }) }),
+  deleteRepo: (repoUrl: string) =>
+    request<{ deletedChunks: number }>(`/api/repos?repoUrl=${encodeURIComponent(repoUrl)}`, { method: 'DELETE' }),
   ingest: (repoUrl: string, branch: string, full: boolean) =>
     request<IngestResult>('/api/ingest-repo', { method: 'POST', body: JSON.stringify({ repoUrl, branch, full }) }),
 };

@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { CircleAlert } from 'lucide-react';
+import { CircleAlert, Trash } from 'lucide-react';
 import { api, type Repo } from '../api';
 import { Deck, pad2, repoName, shortDate } from './bits';
 
@@ -19,6 +19,17 @@ export function Record({ repos, onRecorded }: { repos: Repo[]; onRecorded: () =>
         status: 'done',
         text: `${r.message}: ${r.newChunks} fragmentos nuevos, ${r.deletedChunks} reemplazados.`,
       });
+      onRecorded();
+    } catch (err) {
+      setState({ status: 'error', text: (err as Error).message });
+    }
+  }
+
+  async function remove(r: Repo) {
+    if (!confirm(`¿Borrar la cinta «${repoName(r.repoUrl)}»? Se eliminan sus ${r.chunksCount} fragmentos indexados; el repo de GitHub no se toca.`)) return;
+    try {
+      const { deletedChunks } = await api.deleteRepo(r.repoUrl);
+      setState({ status: 'done', text: `Cinta borrada: ${deletedChunks} fragmentos eliminados.` });
       onRecorded();
     } catch (err) {
       setState({ status: 'error', text: (err as Error).message });
@@ -74,7 +85,7 @@ export function Record({ repos, onRecorded }: { repos: Repo[]; onRecorded: () =>
           ) : (
             <ol className="tracks">
               {repos.map((r, i) => (
-                <li key={r.repoUrl} className="track">
+                <li key={r.repoUrl} className="track track-row">
                   <div className="track-btn track-static">
                     <span className="track-no num">{pad2(i + 1)}</span>
                     <span className="track-path">
@@ -85,6 +96,10 @@ export function Record({ repos, onRecorded }: { repos: Repo[]; onRecorded: () =>
                       <small>{shortDate(r.updatedAt)}</small>
                     </span>
                   </div>
+                  <button className="icon-btn" aria-label={`Borrar la cinta «${repoName(r.repoUrl)}»`}
+                    onClick={() => remove(r)} disabled={recording}>
+                    <Trash size={16} />
+                  </button>
                 </li>
               ))}
             </ol>

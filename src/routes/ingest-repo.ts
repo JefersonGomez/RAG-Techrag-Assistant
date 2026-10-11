@@ -151,4 +151,25 @@ router.post('/api/ingest-repo', requireAdmin, ingestLimiter, async (req, res) =>
   }
 });
 
+// Borra un repo indexado: sus chunks (Supabase) y su registro de ingesta
+router.delete('/api/repos', requireAdmin, async (req, res) => {
+  const repoUrl = req.query.repoUrl;
+  if (typeof repoUrl !== 'string' || !REPO_URL_RE.test(repoUrl)) {
+    return res.status(400).json({ error: 'repoUrl debe ser https://github.com/<owner>/<repo>' });
+  }
+  if (inProgress.has(repoUrl)) {
+    return res.status(409).json({ error: 'Hay una ingesta en curso para este repo' });
+  }
+  try {
+    const deletedChunks = await deleteChunks(repoUrl);
+    const { count } = await prisma.repoIngestion.deleteMany({ where: { repoUrl } });
+    if (count === 0 && deletedChunks === 0) return res.status(404).json({ error: 'Repo no encontrado' });
+    await invalidateCache();
+    res.json({ ok: true, deletedChunks });
+  } catch (error) {
+    console.error('Error borrando repo:', error);
+    res.status(500).json({ error: 'No se pudo borrar el repo' });
+  }
+});
+
 export default router;
