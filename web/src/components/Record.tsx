@@ -7,13 +7,14 @@ import { Deck, pad2, repoName, shortDate } from './bits';
 export function Record({ repos, onRecorded }: { repos: Repo[]; onRecorded: () => void }) {
   const [repoUrl, setRepoUrl] = useState('');
   const [branch, setBranch] = useState('main');
+  const [full, setFull] = useState(false);
   const [state, setState] = useState<{ status: 'idle' | 'recording' | 'done' | 'error'; text?: string }>({ status: 'idle' });
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
     setState({ status: 'recording' });
     try {
-      const r = await api.ingest(repoUrl.trim(), branch.trim() || 'main');
+      const r = await api.ingest(repoUrl.trim(), branch.trim() || 'main', full);
       setState({
         status: 'done',
         text: `${r.message}: ${r.newChunks} fragmentos nuevos, ${r.deletedChunks} reemplazados.`,
@@ -50,6 +51,10 @@ export function Record({ repos, onRecorded }: { repos: Repo[]; onRecorded: () =>
           <button type="submit" className="btn btn-primary" disabled={recording || !repoUrl.trim()}>
             {recording ? 'Grabando…' : 'Grabar'}
           </button>
+          <label className="record-full">
+            <input type="checkbox" checked={full} onChange={(e) => setFull(e.target.checked)} disabled={recording} />
+            Regrabar desde cero (borra lo indexado de este repo y lo vuelve a leer entero)
+          </label>
         </form>
 
         {recording && (

@@ -3,7 +3,21 @@ import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 
-export const SUPPORTED_EXTS = ['.js', '.ts', '.md', '.txt'];
+export const SUPPORTED_EXTS = [
+  '.js', '.jsx', '.ts', '.tsx', '.mjs', '.cjs', '.vue', '.svelte',
+  '.go', '.java', '.py', '.rb', '.php', '.cs', '.rs', '.kt', '.swift', '.c', '.cpp', '.h',
+  '.html', '.css', '.scss', '.sql', '.prisma', '.sh',
+  '.json', '.yml', '.yaml', '.toml',
+  '.md', '.txt',
+];
+const DOC_EXTS = ['.md', '.txt'];
+// Generados y enormes: solo meten ruido en la búsqueda
+const SKIP_FILES = ['package-lock.json', 'yarn.lock', 'pnpm-lock.yaml', 'go.sum', 'composer.lock'];
+// Carpetas ocultas que sí tienen contenido útil (CI/CD)
+const ALLOWED_DOT_DIRS = ['.github'];
+
+const skipDir = (d: string) =>
+  d === 'node_modules' || (d.startsWith('.') && !ALLOWED_DOT_DIRS.includes(d));
 
 export interface DocumentChunk {
   content: string;
@@ -17,11 +31,13 @@ export interface DocumentChunk {
   };
 }
 
-// Mismo criterio que processDirectory, para rutas de git (con '/'): ignora carpetas ocultas y node_modules
+// Criterio único para processDirectory y la ingesta incremental (rutas con '/')
 export function isIndexable(file: string): boolean {
-  const dirs = file.split('/').slice(0, -1);
-  return SUPPORTED_EXTS.includes(path.extname(file).toLowerCase())
-    && !dirs.some(d => d.startsWith('.') || d === 'node_modules');
+  const parts = file.split('/');
+  const name = parts.pop()!;
+  return SUPPORTED_EXTS.includes(path.extname(name).toLowerCase())
+    && !SKIP_FILES.includes(name)
+    && !parts.some(skipDir);
 }
 
 const splitter = new RecursiveCharacterTextSplitter({
@@ -44,12 +60,10 @@ export async function processDirectory(
         const stat = await fs.stat(filePath);
 
         if (stat.isDirectory()) {
-          if (!file.startsWith('.') && file !== 'node_modules') {
-            await readDir(filePath);
-          }
-        } else if (SUPPORTED_EXTS.includes(path.extname(file).toLowerCase())) {
+          if (!skipDir(file)) await readDir(filePath);
+        } else {
           const relPath = path.relative(dirPath, filePath).split(path.sep).join('/');
-          chunks.push(...await processFile(dirPath, relPath, customMetadata));
+          if (isIndexable(relPath)) chunks.push(...await processFile(dirPath, relPath, customMetadata));
         }
       }
     } catch (error) {
@@ -69,7 +83,7 @@ export async function processFile(
 ): Promise<DocumentChunk[]> {
   const ext = path.extname(relPath).toLowerCase();
   const content = await fs.readFile(path.join(rootDir, relPath), 'utf-8');
-  const type = ['.js', '.ts'].includes(ext) ? 'code' : 'doc';
+  const type = DOC_EXTS.includes(ext) ? 'doc' : 'code';
 
   const baseMetadata = {
     source: relPath,

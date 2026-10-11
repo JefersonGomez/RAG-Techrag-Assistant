@@ -28,7 +28,7 @@ const BRANCH_RE = /^(?!-)(?!.*\.\.)[\w./-]{1,100}$/;
 const inProgress = new Set<string>();
 
 router.post('/api/ingest-repo', requireAdmin, ingestLimiter, async (req, res) => {
-  const { repoUrl, branch = 'main' } = req.body || {};
+  const { repoUrl, branch = 'main', full = false } = req.body || {};
   if (typeof repoUrl !== 'string' || typeof branch !== 'string') {
     return res.status(400).json({ error: 'Se requiere repoUrl válido' });
   }
@@ -61,7 +61,8 @@ router.post('/api/ingest-repo', requireAdmin, ingestLimiter, async (req, res) =>
     // Archivos cambiados desde el último commit, o null si hay que reindexar todo
     let changes: Array<{ status: string; file: string }> | null = null;
 
-    if (lastIngestion && lastIngestion.branch === branch) {
+    // full: regrabar desde cero (p. ej. tras cambiar qué archivos se indexan)
+    if (lastIngestion && lastIngestion.branch === branch && full !== true) {
       // INCREMENTAL: historial completo (sin blobs viejos) para poder hacer diff
       await simpleGit().clone(cleanRepoUrl, tempDir, [
         '--branch', branch, '--single-branch', '--filter=blob:none'

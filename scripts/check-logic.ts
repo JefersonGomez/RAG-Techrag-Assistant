@@ -12,7 +12,12 @@ assert.throws(() => parseFilters(['a']));
 assert.ok(isIndexable('src/db.ts'));
 assert.ok(isIndexable('README.md'));
 assert.ok(!isIndexable('node_modules/x/index.js'));
-assert.ok(!isIndexable('.github/notes.md'));
+assert.ok(isIndexable('src/components/Hero.jsx'));
+assert.ok(isIndexable('package.json'));
+assert.ok(isIndexable('.github/workflows/deploy.yml'));
+assert.ok(isIndexable('cmd/main.go'));
+assert.ok(!isIndexable('.vscode/settings.json'));
+assert.ok(!isIndexable('web/package-lock.json'));
 assert.ok(!isIndexable('image.png'));
 
 console.log('✅ check-logic OK');
