@@ -11,6 +11,8 @@ export const SUPPORTED_EXTS = [
   '.md', '.txt',
 ];
 const DOC_EXTS = ['.md', '.txt'];
+// Manifiestos en la raíz del repo: declaran lenguaje, framework y dependencias
+export const MANIFESTS = ['package.json', 'go.mod', 'pom.xml', 'build.gradle', 'requirements.txt', 'pyproject.toml', 'Cargo.toml', 'composer.json', 'Gemfile'];
 // Generados y enormes: solo meten ruido en la búsqueda
 const SKIP_FILES = ['package-lock.json', 'yarn.lock', 'pnpm-lock.yaml', 'go.sum', 'composer.lock'];
 // Carpetas ocultas que sí tienen contenido útil (CI/CD)

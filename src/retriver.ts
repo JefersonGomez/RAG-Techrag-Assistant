@@ -2,6 +2,7 @@
 import { Prisma } from "../generated/prisma";
 import { prisma } from "./db";
 import { embeddings } from "./embeddings";
+import { MANIFESTS } from "./ingestion";
 
 export interface RetrievedChunk {
   id?: string;
@@ -24,9 +25,7 @@ export function parseFilters(input: unknown): Record<string, string> | undefined
   return input as Record<string, string>;
 }
 
-// Manifiestos en la raíz del repo: dicen con qué está hecho, pero casi nunca ganan por similitud
-const MANIFESTS = ['package.json', 'go.mod', 'pom.xml', 'build.gradle', 'requirements.txt', 'pyproject.toml', 'Cargo.toml', 'composer.json', 'Gemfile'];
-
+// Los manifiestos dicen con qué está hecho el repo, pero casi nunca ganan por similitud
 export async function getManifestChunks(repoUrl: string): Promise<RetrievedChunk[]> {
   // Solo el primer trozo de cada manifiesto: ahí están nombre y dependencias
   return prisma.$queryRaw<RetrievedChunk[]>`
