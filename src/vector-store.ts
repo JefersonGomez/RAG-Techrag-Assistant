@@ -1,7 +1,7 @@
 import { Prisma } from "../generated/prisma";
 import { prisma } from "./db";
 import { embeddings } from "./embeddings";
-import { DocumentChunk } from "./ingestion";
+import { DocumentChunk, textForModel } from "./ingestion";
 
 export async function storeChuncks(chunks: DocumentChunk[]) {
   console.log(`🔄 Procesando ${chunks.length} fragmentos...`);
@@ -14,7 +14,7 @@ export async function storeChuncks(chunks: DocumentChunk[]) {
   for (let i = 0; i < chunks.length; i += BATCH_SIZE) {
     const batch = chunks.slice(i, i + BATCH_SIZE);
     const vectors = await embeddings.embedDocuments(
-      batch.map((c) => c.content),
+      batch.map(textForModel),
     );
 
     // PostgreSQL espera el vector en formato string: '[0.1, 0.2, 0.3]'

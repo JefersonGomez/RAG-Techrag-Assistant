@@ -1,7 +1,7 @@
 // scripts/check-logic.ts — verificación rápida sin red: npx tsx scripts/check-logic.ts
 import assert from 'assert';
 import { parseFilters } from '../src/retriver';
-import { isIndexable } from '../src/ingestion';
+import { isIndexable, textForModel } from '../src/ingestion';
 
 assert.deepStrictEqual(parseFilters({ type: 'code' }), { type: 'code' });
 assert.strictEqual(parseFilters(undefined), undefined);
@@ -19,6 +19,11 @@ assert.ok(isIndexable('cmd/main.go'));
 assert.ok(!isIndexable('.vscode/settings.json'));
 assert.ok(!isIndexable('web/package-lock.json'));
 assert.ok(!isIndexable('image.png'));
+
+assert.strictEqual(
+  textForModel({ content: '{}', metadata: { repoUrl: 'https://github.com/a/portafolio', source: 'package.json' } }),
+  'Repositorio: a/portafolio\nArchivo: package.json\n\n{}'
+);
 
 console.log('✅ check-logic OK');
 process.exit(0);

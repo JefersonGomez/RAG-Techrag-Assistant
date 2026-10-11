@@ -40,6 +40,13 @@ export function isIndexable(file: string): boolean {
     && !parts.some(skipDir);
 }
 
+// Texto que ven el modelo de embeddings y el reranker: sin repo y ruta, un trozo de
+// package.json o de un .jsx no "se parece" a preguntas como "¿qué tecnologías usa?"
+export function textForModel(chunk: { content: string; metadata: Record<string, any> }): string {
+  const repo = String(chunk.metadata.repoUrl ?? '').replace('https://github.com/', '');
+  return `Repositorio: ${repo}\nArchivo: ${chunk.metadata.source}\n\n${chunk.content}`;
+}
+
 const splitter = new RecursiveCharacterTextSplitter({
   chunkSize: 509,
   chunkOverlap: 50,

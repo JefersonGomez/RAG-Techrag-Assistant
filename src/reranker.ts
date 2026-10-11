@@ -8,6 +8,7 @@ import {
 } from '@huggingface/transformers';
 import { sessionOptions } from './embeddings';
 import type { RetrievedChunk } from './retriver';
+import { textForModel } from './ingestion';
 
 const MODEL = 'onnx-community/bge-reranker-v2-m3-ONNX';
 
@@ -52,7 +53,7 @@ export async function rerankChunks(
     const [tokenizer, model] = await getReranker();
     // Pregunta y chunk como par real de entrada (no concatenados con "[SEP]")
     const inputs = tokenizer(new Array(candidates.length).fill(query), {
-      text_pair: candidates.map((c) => c.content),
+      text_pair: candidates.map(textForModel),
       padding: true,
       truncation: true,
     });
