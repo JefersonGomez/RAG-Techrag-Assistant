@@ -12,6 +12,9 @@ function linkCitations(text: string): string {
   );
 }
 
+// Frase exacta que el backend pide al LLM cuando el contexto no alcanza
+const NO_INFO = /^\s*No tengo información suficiente\.?\s*$/i;
+
 interface AnswerProps {
   content: string;
   sources: Source[] | null;
@@ -64,7 +67,12 @@ export function Answer({ content, sources, streaming, fromCache, rating, onRate 
         </Markdown>
       </div>
 
-      {sources && (
+      {sources && !streaming && NO_INFO.test(content) ? (
+        // Sin respuesta, las pistas no respaldan nada: solo se dice cuánto se revisó
+        <p className="tracklist-empty">
+          Se revisaron {sources.length} fragmentos de la cinta y ninguno responde a esta pregunta.
+        </p>
+      ) : sources && (
         <Tracklist
           sources={sources}
           active={active}
