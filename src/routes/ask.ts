@@ -1,7 +1,7 @@
 // src/routes/ask.ts
 import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
-import { retrieveRelevantChunks, parseFilters } from '../retriver';
+import { retrieveRelevantChunks, getManifestChunks, parseFilters } from '../retriver';
 import { generateAnswerStream } from '../generator-stream';
 import { getCachedAnswer, setCachedAnswer } from '../cache';
 import { rerankChunks } from '../reranker';
@@ -84,9 +84,14 @@ router.post('/api/ask', requireAuth, askLimiter, async (req, res) => {
       }
     } else {
       const rawChunks = await retrieveRelevantChunks(question, 20, filters); // ← Pedir 20 candidatos baratos
-      const chunks = rawChunks.length > 4
-        ? await rerankChunks(question, rawChunks, 4)  // ← Re-rankear solo si hay suficientes
-        : rawChunks.map(c => ({ ...c, rerankScore: c.score }));
+      // Con un repo elegido, sus manifiestos (package.json, go.mod...) siempre llegan al LLM
+      const manifests = filters?.repoUrl ? await getManifestChunks(filters.repoUrl) : [];
+      const isManifest = (c: { id?: string }) => manifests.some(m => m.id === c.id);
+      const candidates = [...rawChunks, ...manifests.filter(m => !rawChunks.some(c => c.id === m.id))];
+      const ranked = candidates.length > 4
+        ? await rerankChunks(question, candidates, candidates.length)  // ← Re-rankear solo si hay suficientes
+        : candidates.map(c => ({ ...c, rerankScore: c.score }));
+      const chunks = [...ranked.slice(0, 4), ...ranked.slice(4).filter(isManifest)];
 
       sources = toSources(chunks);
       send({ type: 'sources', sources });

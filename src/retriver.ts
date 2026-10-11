@@ -24,6 +24,21 @@ export function parseFilters(input: unknown): Record<string, string> | undefined
   return input as Record<string, string>;
 }
 
+// Manifiestos en la raíz del repo: dicen con qué está hecho, pero casi nunca ganan por similitud
+const MANIFESTS = ['package.json', 'go.mod', 'pom.xml', 'build.gradle', 'requirements.txt', 'pyproject.toml', 'Cargo.toml', 'composer.json', 'Gemfile'];
+
+export async function getManifestChunks(repoUrl: string): Promise<RetrievedChunk[]> {
+  // Solo el primer trozo de cada manifiesto: ahí están nombre y dependencias
+  return prisma.$queryRaw<RetrievedChunk[]>`
+    SELECT DISTINCT ON (metadata->>'source') id, content, metadata, 0::float AS score
+    FROM document_chunks
+    WHERE metadata->>'repoUrl' = ${repoUrl}
+      AND metadata->>'source' IN (${Prisma.join(MANIFESTS)})
+    ORDER BY metadata->>'source', (metadata->>'startLine')::int
+    LIMIT 3
+  `;
+}
+
 export async function retrieveRelevantChunks(
   query: string,
   topK: number = 4,

@@ -28,7 +28,8 @@ INSTRUCCIONES:
 1. Si la respuesta no está en el contexto, di exactamente: "No tengo información suficiente."
 2. Cita fuentes al final de afirmaciones clave: [Fuente X]
 3. No inventes código o configuraciones.
-4. Sé conciso y técnico.`;
+4. Distingue el código que implementa el repositorio (manifiestos como package.json o go.mod, imports, configuración) del contenido que el repositorio muestra o almacena (textos, listas de datos). Si preguntan con qué está hecho el proyecto, responde con lo primero; si hace falta, menciona lo segundo aparte y aclarando que es contenido.
+5. Sé conciso y técnico.`;
 
   const stream = await groq.chat.completions.create({
     messages: [{ role: "user", content: prompt }],
