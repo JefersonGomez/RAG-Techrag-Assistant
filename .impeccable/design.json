@@ -1,0 +1,502 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-10T05:39:11.799Z",
+  "title": "Design System: TechRAG Assistant",
+  "extensions": {
+    "colorMeta": {
+      "ink": {
+        "role": "primary",
+        "displayName": "Ballpoint Blue",
+        "canonical": "oklch(37% 0.14 265)",
+        "tonalRamp": [
+          "oklch(15% 0.14 265)",
+          "oklch(26% 0.14 265)",
+          "oklch(38% 0.14 265)",
+          "oklch(49% 0.14 265)",
+          "oklch(61% 0.14 265)",
+          "oklch(72% 0.14 265)",
+          "oklch(84% 0.14 265)",
+          "oklch(95% 0.14 265)"
+        ]
+      },
+      "ink-deep": {
+        "role": "primary",
+        "displayName": "Pressed Ballpoint",
+        "canonical": "oklch(34% 0.13 265)",
+        "tonalRamp": [
+          "oklch(15% 0.13 265)",
+          "oklch(26% 0.13 265)",
+          "oklch(38% 0.13 265)",
+          "oklch(49% 0.13 265)",
+          "oklch(61% 0.13 265)",
+          "oklch(72% 0.13 265)",
+          "oklch(84% 0.13 265)",
+          "oklch(95% 0.13 265)"
+        ]
+      },
+      "ink-body": {
+        "role": "primary",
+        "displayName": "Long-Text Ink",
+        "canonical": "oklch(32% 0.12 265)",
+        "tonalRamp": [
+          "oklch(15% 0.12 265)",
+          "oklch(26% 0.12 265)",
+          "oklch(38% 0.12 265)",
+          "oklch(49% 0.12 265)",
+          "oklch(61% 0.12 265)",
+          "oklch(72% 0.12 265)",
+          "oklch(84% 0.12 265)",
+          "oklch(95% 0.12 265)"
+        ]
+      },
+      "ink-2": {
+        "role": "primary",
+        "displayName": "Light-Pressure Ink",
+        "canonical": "oklch(50% 0.12 268)",
+        "tonalRamp": [
+          "oklch(15% 0.12 268)",
+          "oklch(26% 0.12 268)",
+          "oklch(38% 0.12 268)",
+          "oklch(49% 0.12 268)",
+          "oklch(61% 0.12 268)",
+          "oklch(72% 0.12 268)",
+          "oklch(84% 0.12 268)",
+          "oklch(95% 0.12 268)"
+        ]
+      },
+      "ink-faded": {
+        "role": "primary",
+        "displayName": "Faded Ink",
+        "canonical": "oklch(62% 0.11 266)",
+        "tonalRamp": [
+          "oklch(15% 0.11 266)",
+          "oklch(26% 0.11 266)",
+          "oklch(38% 0.11 266)",
+          "oklch(49% 0.11 266)",
+          "oklch(61% 0.11 266)",
+          "oklch(72% 0.11 266)",
+          "oklch(84% 0.11 266)",
+          "oklch(95% 0.11 266)"
+        ]
+      },
+      "stripe-red": {
+        "role": "secondary",
+        "displayName": "Brand-Stripe Red",
+        "canonical": "oklch(56% 0.19 26)",
+        "tonalRamp": [
+          "oklch(15% 0.19 26)",
+          "oklch(26% 0.19 26)",
+          "oklch(38% 0.19 26)",
+          "oklch(49% 0.19 26)",
+          "oklch(61% 0.19 26)",
+          "oklch(72% 0.19 26)",
+          "oklch(84% 0.19 26)",
+          "oklch(95% 0.19 26)"
+        ]
+      },
+      "red-deep": {
+        "role": "secondary",
+        "displayName": "Deep Red",
+        "canonical": "oklch(37% 0.13 25)",
+        "tonalRamp": [
+          "oklch(15% 0.13 25)",
+          "oklch(26% 0.13 25)",
+          "oklch(38% 0.13 25)",
+          "oklch(49% 0.13 25)",
+          "oklch(61% 0.13 25)",
+          "oklch(72% 0.13 25)",
+          "oklch(84% 0.13 25)",
+          "oklch(95% 0.13 25)"
+        ]
+      },
+      "red-wash": {
+        "role": "secondary",
+        "displayName": "Red Wash",
+        "canonical": "oklch(95% 0.015 20)",
+        "tonalRamp": [
+          "oklch(15% 0.015 20)",
+          "oklch(26% 0.015 20)",
+          "oklch(38% 0.015 20)",
+          "oklch(49% 0.015 20)",
+          "oklch(61% 0.015 20)",
+          "oklch(72% 0.015 20)",
+          "oklch(84% 0.015 20)",
+          "oklch(95% 0.015 20)"
+        ]
+      },
+      "inlay-white": {
+        "role": "neutral",
+        "displayName": "Inlay White",
+        "canonical": "oklch(98.9% 0.005 95)",
+        "tonalRamp": [
+          "oklch(15% 0.005 95)",
+          "oklch(26% 0.005 95)",
+          "oklch(38% 0.005 95)",
+          "oklch(49% 0.005 95)",
+          "oklch(61% 0.005 95)",
+          "oklch(72% 0.005 95)",
+          "oklch(84% 0.005 95)",
+          "oklch(95% 0.005 95)"
+        ]
+      },
+      "shelf": {
+        "role": "neutral",
+        "displayName": "Shelf",
+        "canonical": "oklch(96.2% 0.008 100)",
+        "tonalRamp": [
+          "oklch(15% 0.008 100)",
+          "oklch(26% 0.008 100)",
+          "oklch(38% 0.008 100)",
+          "oklch(49% 0.008 100)",
+          "oklch(61% 0.008 100)",
+          "oklch(72% 0.008 100)",
+          "oklch(84% 0.008 100)",
+          "oklch(95% 0.008 100)"
+        ]
+      },
+      "printed-rule": {
+        "role": "neutral",
+        "displayName": "Printed Rule",
+        "canonical": "oklch(89% 0.025 270)",
+        "tonalRamp": [
+          "oklch(15% 0.025 270)",
+          "oklch(26% 0.025 270)",
+          "oklch(38% 0.025 270)",
+          "oklch(49% 0.025 270)",
+          "oklch(61% 0.025 270)",
+          "oklch(72% 0.025 270)",
+          "oklch(84% 0.025 270)",
+          "oklch(95% 0.025 270)"
+        ]
+      },
+      "pencil": {
+        "role": "neutral",
+        "displayName": "Pencil",
+        "canonical": "oklch(72% 0 0)",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "pencil-text": {
+        "role": "neutral",
+        "displayName": "Legible Pencil",
+        "canonical": "oklch(51% 0 0)",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "code-plate": {
+        "role": "neutral",
+        "displayName": "Code Plate",
+        "canonical": "oklch(96% 0.012 265)",
+        "tonalRamp": [
+          "oklch(15% 0.012 265)",
+          "oklch(26% 0.012 265)",
+          "oklch(38% 0.012 265)",
+          "oklch(49% 0.012 265)",
+          "oklch(61% 0.012 265)",
+          "oklch(72% 0.012 265)",
+          "oklch(84% 0.012 265)",
+          "oklch(95% 0.012 265)"
+        ]
+      },
+      "ink-wash": {
+        "role": "neutral",
+        "displayName": "Ink Wash",
+        "canonical": "oklch(94% 0.018 265)",
+        "tonalRamp": [
+          "oklch(15% 0.018 265)",
+          "oklch(26% 0.018 265)",
+          "oklch(38% 0.018 265)",
+          "oklch(49% 0.018 265)",
+          "oklch(61% 0.018 265)",
+          "oklch(72% 0.018 265)",
+          "oklch(84% 0.018 265)",
+          "oklch(95% 0.018 265)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Product name on the login j-card front, uppercase. Once per screen."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Empty-state prompt, uppercase, max 14ch."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Each question as the side A heading, uppercase, pen rule beneath."
+      },
+      "title-sm": {
+        "displayName": "Small Title",
+        "purpose": "Flap title, top bar title, tracklist head, answer h1-h3 (1.2-1.6rem)."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Buttons, field labels, tape names, track numbers, line ranges, counter; always uppercase."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Answer prose and descriptions, max 68ch in answers."
+      },
+      "body-sm": {
+        "displayName": "Small Body",
+        "purpose": "Metadata, hints, status lines, relevance scores (0.75-0.95rem)."
+      },
+      "mono": {
+        "displayName": "Mono",
+        "purpose": "Code and file paths only; ligatures and contextual alternates off."
+      }
+    },
+    "shadows": [
+      {
+        "name": "lifted-jcard",
+        "value": "0 18px 40px -18px rgb(23 44 107 / 0.35)",
+        "purpose": "The login j-card lifting off the shelf. Only use."
+      },
+      {
+        "name": "open-flap",
+        "value": "12px 0 30px -12px rgb(23 44 107 / 0.35)",
+        "purpose": "Mobile flap drawer while open."
+      },
+      {
+        "name": "scrim",
+        "value": "rgb(23 44 107 / 0.25)",
+        "purpose": "Background behind the open mobile drawer (fill, not shadow)."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "All state transitions."
+      },
+      {
+        "name": "state",
+        "value": "140-160ms",
+        "purpose": "Hover/active fills on buttons, cites, tracks, tapes."
+      },
+      {
+        "name": "press",
+        "value": "120ms translateY(1px)",
+        "purpose": "Button press."
+      },
+      {
+        "name": "drawer",
+        "value": "260ms",
+        "purpose": "Mobile flap slide."
+      },
+      {
+        "name": "reel-spin",
+        "value": "1.6s linear infinite",
+        "purpose": "Deck reels while an answer streams."
+      },
+      {
+        "name": "caret-blink",
+        "value": "1s steps(1) infinite",
+        "purpose": "Red block caret trailing streaming text."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "durations 0.01ms",
+        "purpose": "All animation and transition collapsed under prefers-reduced-motion."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "drawer",
+        "value": "860px",
+        "purpose": "At and below: spine hidden, flap becomes drawer, j-card stacks."
+      }
+    ],
+    "borders": [
+      {
+        "name": "pen",
+        "value": "1.5px solid #1e3a8a",
+        "purpose": "Every structural line."
+      },
+      {
+        "name": "printed-rule",
+        "value": "1px solid #d5dcee",
+        "purpose": "Row dividers."
+      },
+      {
+        "name": "stripe",
+        "value": "height 7px; 2px #d32f2f top and bottom",
+        "purpose": "Brand stripe at the 64px line."
+      },
+      {
+        "name": "ruling",
+        "value": "repeating-linear-gradient(to bottom, transparent 0 31px, #d5dcee 31px 32px)",
+        "purpose": "Empty fields only."
+      },
+      {
+        "name": "focus",
+        "value": "outline 2px solid #d32f2f; offset 2px",
+        "purpose": "Global focus-visible."
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Ink-filled lettered button for the main action (Cinta nueva, Enviar, Entrar con GitHub).",
+      "html": "<button class=\"ds-btn-primary\">+ CINTA NUEVA</button>",
+      "css": ":host{--ink:#1e3a8a;--ink-body:#172c6b;--ink-2:#4a62a6;--ink-faded:#6b86c5;--rule:#d5dcee;--pencil:#a6a6a6;--pencil-text:#6b6b6b;--red:#d32f2f;--red-wash:#fbeceb;--paper:#fcfbf7;--plate:#eef2fa;--ink-wash:#e7ecf7;--hand:\"Patrick Hand\",\"Comic Neue\",cursive;--text:\"Atkinson Hyperlegible Next\",system-ui,sans-serif;--mono:\"JetBrains Mono\",ui-monospace,monospace;--ease-out:cubic-bezier(0.16,1,0.3,1);} .ds-btn-primary{display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;min-height:44px;padding:0.4rem 1.1rem;border:1.5px solid var(--ink);border-radius:4px;font-family:var(--hand);font-size:1.15rem;text-transform:uppercase;letter-spacing:0.06em;cursor:pointer;transition:background 160ms var(--ease-out),color 160ms var(--ease-out),transform 120ms var(--ease-out);background:var(--ink);color:var(--paper);} .ds-btn-primary:hover{background:#17307a;} .ds-btn-primary:active{transform:translateY(1px);} .ds-btn-primary:focus-visible{outline:2px solid var(--red);outline-offset:2px;} .ds-btn-primary:disabled{background:var(--paper);border-color:var(--pencil);color:var(--pencil-text);cursor:not-allowed;}"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Inlay-white pen-bordered button; red when it is the current view.",
+      "html": "<button class=\"ds-btn\">GRABAR CINTA</button> <button class=\"ds-btn\" aria-current=\"true\">GRABAR CINTA</button>",
+      "css": ":host{--ink:#1e3a8a;--ink-body:#172c6b;--ink-2:#4a62a6;--ink-faded:#6b86c5;--rule:#d5dcee;--pencil:#a6a6a6;--pencil-text:#6b6b6b;--red:#d32f2f;--red-wash:#fbeceb;--paper:#fcfbf7;--plate:#eef2fa;--ink-wash:#e7ecf7;--hand:\"Patrick Hand\",\"Comic Neue\",cursive;--text:\"Atkinson Hyperlegible Next\",system-ui,sans-serif;--mono:\"JetBrains Mono\",ui-monospace,monospace;--ease-out:cubic-bezier(0.16,1,0.3,1);} .ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;min-height:44px;padding:0.4rem 1.1rem;border:1.5px solid var(--ink);border-radius:4px;font-family:var(--hand);font-size:1.15rem;text-transform:uppercase;letter-spacing:0.06em;cursor:pointer;transition:background 160ms var(--ease-out),color 160ms var(--ease-out),transform 120ms var(--ease-out);background:var(--paper);color:var(--ink);} .ds-btn:hover{background:var(--ink-wash);} .ds-btn:active{transform:translateY(1px);} .ds-btn:focus-visible{outline:2px solid var(--red);outline-offset:2px;} .ds-btn[aria-current=\"true\"]{border-color:var(--red);color:var(--red);background:var(--red-wash);}"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Pen-bordered field with a lettered label above.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-field-label\">URL DEL REPO</span><input class=\"ds-input\" placeholder=\"https://github.com/owner/repo\"></label>",
+      "css": ":host{--ink:#1e3a8a;--ink-body:#172c6b;--ink-2:#4a62a6;--ink-faded:#6b86c5;--rule:#d5dcee;--pencil:#a6a6a6;--pencil-text:#6b6b6b;--red:#d32f2f;--red-wash:#fbeceb;--paper:#fcfbf7;--plate:#eef2fa;--ink-wash:#e7ecf7;--hand:\"Patrick Hand\",\"Comic Neue\",cursive;--text:\"Atkinson Hyperlegible Next\",system-ui,sans-serif;--mono:\"JetBrains Mono\",ui-monospace,monospace;--ease-out:cubic-bezier(0.16,1,0.3,1);} .ds-field{display:grid;gap:0.35rem;} .ds-field-label{font-family:var(--hand);font-size:1.05rem;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink);} .ds-input{width:100%;min-height:44px;padding:0.55rem 0.75rem;border:1.5px solid var(--ink);border-radius:4px;background:var(--paper);color:var(--ink-body);font:17px/1.6 var(--text);caret-color:var(--red);} .ds-input::placeholder{color:var(--pencil-text);} .ds-input:focus-visible{outline:2px solid var(--red);outline-offset:2px;}"
+    },
+    {
+      "name": "Composer",
+      "kind": "input",
+      "refersTo": "composer",
+      "description": "Question box pinned under the column; red border on focus, never a shadow.",
+      "html": "<div class=\"ds-composer\"><textarea rows=\"1\" placeholder=\"Pregunta sobre esta cinta...\"></textarea><button class=\"ds-send\">ENVIAR</button></div>",
+      "css": ":host{--ink:#1e3a8a;--ink-body:#172c6b;--ink-2:#4a62a6;--ink-faded:#6b86c5;--rule:#d5dcee;--pencil:#a6a6a6;--pencil-text:#6b6b6b;--red:#d32f2f;--red-wash:#fbeceb;--paper:#fcfbf7;--plate:#eef2fa;--ink-wash:#e7ecf7;--hand:\"Patrick Hand\",\"Comic Neue\",cursive;--text:\"Atkinson Hyperlegible Next\",system-ui,sans-serif;--mono:\"JetBrains Mono\",ui-monospace,monospace;--ease-out:cubic-bezier(0.16,1,0.3,1);} .ds-composer{display:flex;align-items:flex-end;gap:0.5rem;padding:0.5rem 0.5rem 0.5rem 0.9rem;border:1.5px solid var(--ink);border-radius:6px;background:var(--paper);max-width:620px;} .ds-composer:focus-within{border-color:var(--red);} .ds-composer textarea{flex:1;min-height:44px;padding:0.55rem 0;border:0;outline:none;resize:none;background:transparent;font:17px/1.5 var(--text);color:var(--ink-body);caret-color:var(--red);} .ds-composer textarea::placeholder{color:var(--pencil-text);} .ds-send{display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;min-height:44px;padding:0.4rem 1.1rem;border:1.5px solid var(--ink);border-radius:4px;font-family:var(--hand);font-size:1.15rem;text-transform:uppercase;letter-spacing:0.06em;cursor:pointer;transition:background 160ms var(--ease-out),color 160ms var(--ease-out),transform 120ms var(--ease-out);background:var(--ink);color:var(--paper);} .ds-send:hover{background:#17307a;} .ds-send:focus-visible{outline:2px solid var(--red);outline-offset:2px;}"
+    },
+    {
+      "name": "Cite Chip",
+      "kind": "chip",
+      "refersTo": "cite",
+      "description": "Red-ink citation [N] in answer prose, synced with track N.",
+      "html": "<p class=\"ds-answer\">Borra sus fragmentos viejos <a href=\"#\" class=\"ds-cite\">01</a>, filtrando por repo y ruta <a href=\"#\" class=\"ds-cite\" data-active=\"true\">02</a>.</p>",
+      "css": ":host{--ink:#1e3a8a;--ink-body:#172c6b;--ink-2:#4a62a6;--ink-faded:#6b86c5;--rule:#d5dcee;--pencil:#a6a6a6;--pencil-text:#6b6b6b;--red:#d32f2f;--red-wash:#fbeceb;--paper:#fcfbf7;--plate:#eef2fa;--ink-wash:#e7ecf7;--hand:\"Patrick Hand\",\"Comic Neue\",cursive;--text:\"Atkinson Hyperlegible Next\",system-ui,sans-serif;--mono:\"JetBrains Mono\",ui-monospace,monospace;--ease-out:cubic-bezier(0.16,1,0.3,1);} .ds-answer{font:17px/1.6 var(--text);color:var(--ink-body);max-width:68ch;margin:0;} .ds-cite{display:inline-block;min-width:1.9em;margin:0 0.1em;padding:0 0.3em;border:1.5px solid var(--red);border-radius:3px;font-family:var(--hand);font-size:0.9em;line-height:1.25;text-align:center;text-decoration:none;color:var(--red);background:var(--paper);font-variant-numeric:tabular-nums;transition:background 140ms var(--ease-out),color 140ms var(--ease-out);} .ds-cite:hover,.ds-cite[data-active=\"true\"]{background:var(--red);color:var(--paper);} .ds-cite:focus-visible{outline:2px solid var(--red);outline-offset:2px;}"
+    },
+    {
+      "name": "Tape Label",
+      "kind": "nav",
+      "refersTo": null,
+      "description": "Conversation entry in the flap; current tape gets a pen border, red side letter and three red tally marks.",
+      "html": "<ul class=\"ds-flap\"><li class=\"ds-tape\" aria-current=\"true\"><a href=\"#\" class=\"ds-tape-link\"><span class=\"ds-tape-label\"><span><b>A</b>RAG-TECHRAG-ASSISTANT</span><span>9 OCT</span></span><span class=\"ds-tape-name\">¿Cómo funciona la ingesta incremental?</span></a></li><li class=\"ds-tape\"><a href=\"#\" class=\"ds-tape-link\"><span class=\"ds-tape-label\"><span><b>A</b>TODAS LAS CINTAS</span><span>4 OCT</span></span><span class=\"ds-tape-name\">Explícame el flujo de login</span></a></li></ul>",
+      "css": ":host{--ink:#1e3a8a;--ink-body:#172c6b;--ink-2:#4a62a6;--ink-faded:#6b86c5;--rule:#d5dcee;--pencil:#a6a6a6;--pencil-text:#6b6b6b;--red:#d32f2f;--red-wash:#fbeceb;--paper:#fcfbf7;--plate:#eef2fa;--ink-wash:#e7ecf7;--hand:\"Patrick Hand\",\"Comic Neue\",cursive;--text:\"Atkinson Hyperlegible Next\",system-ui,sans-serif;--mono:\"JetBrains Mono\",ui-monospace,monospace;--ease-out:cubic-bezier(0.16,1,0.3,1);} .ds-flap{list-style:none;margin:0;padding:0 0 96px;width:300px;background:var(--paper) repeating-linear-gradient(to bottom,transparent 0 31px,var(--rule) 31px 32px);border-top:1.5px solid var(--ink);} .ds-tape{position:relative;padding:0.35rem 0.6rem;background:var(--paper);} .ds-tape-link{display:grid;gap:0.2rem;padding:0.55rem 0.75rem 0.6rem;border:1.5px solid transparent;border-radius:4px;background:var(--paper);text-decoration:none;transition:border-color 160ms var(--ease-out);} .ds-tape:not([aria-current=\"true\"]) .ds-tape-link:hover{border-color:var(--ink-faded);} .ds-tape-link:focus-visible{outline:2px solid var(--red);outline-offset:2px;} .ds-tape[aria-current=\"true\"] .ds-tape-link{border:1.5px solid var(--ink);} .ds-tape[aria-current=\"true\"]::after{content:\"\";position:absolute;top:0.35rem;right:1.25rem;width:12px;height:16px;background:linear-gradient(90deg,var(--red) 0 2px,transparent 2px 5px,var(--red) 5px 7px,transparent 7px 10px,var(--red) 10px 12px);} .ds-tape-label{display:flex;justify-content:space-between;gap:0.5rem;padding-right:1.5rem;font-family:var(--hand);font-size:0.95rem;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink-2);} .ds-tape-label b{font-weight:400;margin-right:0.35rem;} .ds-tape[aria-current=\"true\"] .ds-tape-label b{color:var(--red);} .ds-tape-name{font-family:var(--hand);font-size:1.2rem;line-height:1.25;text-transform:uppercase;letter-spacing:0.03em;color:var(--ink);}"
+    },
+    {
+      "name": "Lado B Tracklist",
+      "kind": "custom",
+      "refersTo": "track",
+      "description": "Signature: the sources of every answer as a numbered tracklist with path, right-aligned line range and relevance.",
+      "html": "<section class=\"ds-tl\"><div class=\"ds-tl-head\"><h3>LADO B · FUENTES</h3><span>2 PISTAS</span></div><ol class=\"ds-tracks\"><li class=\"ds-track\" data-active=\"true\"><button class=\"ds-track-btn\"><span class=\"ds-no\">01</span><span class=\"ds-path\"><span class=\"ds-dir\">src/routes/</span><span class=\"ds-file\">ingest-repo.ts</span></span><span class=\"ds-time\">L 96–112<small>rel. 0,91</small></span></button></li><li class=\"ds-track\"><button class=\"ds-track-btn\"><span class=\"ds-no\">02</span><span class=\"ds-path\"><span class=\"ds-dir\">src/</span><span class=\"ds-file\">vector-store.ts</span></span><span class=\"ds-time\">L 41–49<small>rel. 0,84</small></span></button></li></ol></section>",
+      "css": ":host{--ink:#1e3a8a;--ink-body:#172c6b;--ink-2:#4a62a6;--ink-faded:#6b86c5;--rule:#d5dcee;--pencil:#a6a6a6;--pencil-text:#6b6b6b;--red:#d32f2f;--red-wash:#fbeceb;--paper:#fcfbf7;--plate:#eef2fa;--ink-wash:#e7ecf7;--hand:\"Patrick Hand\",\"Comic Neue\",cursive;--text:\"Atkinson Hyperlegible Next\",system-ui,sans-serif;--mono:\"JetBrains Mono\",ui-monospace,monospace;--ease-out:cubic-bezier(0.16,1,0.3,1);} .ds-tl{max-width:680px;} .ds-tl-head{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;padding-bottom:0.35rem;border-bottom:1.5px solid var(--ink);font-family:var(--hand);text-transform:uppercase;letter-spacing:0.05em;color:var(--ink);} .ds-tl-head h3{margin:0;font-weight:400;font-size:1.35rem;text-decoration:underline;text-decoration-color:var(--red);text-decoration-thickness:2px;text-underline-offset:5px;} .ds-tl-head span{font-size:1.1rem;} .ds-tracks{list-style:none;margin:0;padding:0;} .ds-track{border-bottom:1px solid var(--rule);} .ds-track-btn{display:grid;grid-template-columns:2.4rem minmax(0,1fr) auto;align-items:baseline;gap:0.75rem;width:100%;padding:0.5rem 0.25rem;border:0;background:transparent;text-align:left;cursor:pointer;transition:background 140ms var(--ease-out);} .ds-track-btn:hover,.ds-track[data-active=\"true\"] .ds-track-btn{background:var(--ink-wash);} .ds-track-btn:focus-visible{outline:2px solid var(--red);outline-offset:2px;} .ds-no{font-family:var(--hand);font-size:1.2rem;color:var(--ink);font-variant-numeric:tabular-nums;} .ds-track[data-active=\"true\"] .ds-no{color:var(--red);} .ds-path{font-family:var(--mono);font-size:0.86rem;color:var(--ink-body);font-variant-ligatures:none;} .ds-dir{color:var(--ink-2);} .ds-track[data-active=\"true\"] .ds-file{text-decoration:underline;text-decoration-color:var(--red);text-decoration-thickness:2px;text-underline-offset:3px;} .ds-time{display:grid;justify-items:end;font-family:var(--hand);font-size:1.15rem;color:var(--ink);white-space:nowrap;font-variant-numeric:tabular-nums;} .ds-time small{font-family:var(--text);font-size:0.75rem;color:var(--pencil-text);}"
+    },
+    {
+      "name": "Code Plate",
+      "kind": "card",
+      "refersTo": "code-plate",
+      "description": "Code block on the blue-tinted plate; mono with ligatures off.",
+      "html": "<pre class=\"ds-plate\"><code>if (status === 'D') continue;\nconst chunks = await processFile(tempDir, file);</code></pre>",
+      "css": ":host{--ink:#1e3a8a;--ink-body:#172c6b;--ink-2:#4a62a6;--ink-faded:#6b86c5;--rule:#d5dcee;--pencil:#a6a6a6;--pencil-text:#6b6b6b;--red:#d32f2f;--red-wash:#fbeceb;--paper:#fcfbf7;--plate:#eef2fa;--ink-wash:#e7ecf7;--hand:\"Patrick Hand\",\"Comic Neue\",cursive;--text:\"Atkinson Hyperlegible Next\",system-ui,sans-serif;--mono:\"JetBrains Mono\",ui-monospace,monospace;--ease-out:cubic-bezier(0.16,1,0.3,1);} .ds-plate{margin:0;padding:0.9rem 1rem;background:var(--plate);border:1px solid var(--ink-faded);border-radius:4px;overflow-x:auto;} .ds-plate code{font:0.85rem/1.55 var(--mono);color:var(--ink);font-variant-ligatures:none;font-feature-settings:\"liga\" 0,\"calt\" 0;}"
+    },
+    {
+      "name": "Deck and Counter",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "Streaming status: ink cassette with spinning reels and a token counter.",
+      "html": "<div class=\"ds-status\"><svg class=\"ds-deck\" width=\"40\" height=\"26\" viewBox=\"0 0 40 26\" aria-hidden=\"true\"><rect x=\"1\" y=\"1\" width=\"38\" height=\"24\" rx=\"2.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"/><rect x=\"9\" y=\"9\" width=\"22\" height=\"12\" rx=\"6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.2\"/><path d=\"M6 4.5h28\" stroke=\"#d32f2f\" stroke-width=\"1.5\"/><g class=\"ds-reel\"><circle cx=\"14\" cy=\"15\" r=\"5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"/><path d=\"M14 10.5v9M9.5 15h9\" stroke=\"currentColor\" stroke-width=\"1.2\" stroke-linecap=\"round\"/></g><g class=\"ds-reel\"><circle cx=\"26\" cy=\"15\" r=\"5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"/><path d=\"M26 10.5v9M21.5 15h9\" stroke=\"currentColor\" stroke-width=\"1.2\" stroke-linecap=\"round\"/></g></svg><span class=\"ds-counter\">0142</span><span>Grabando respuesta…</span></div>",
+      "css": ":host{--ink:#1e3a8a;--ink-body:#172c6b;--ink-2:#4a62a6;--ink-faded:#6b86c5;--rule:#d5dcee;--pencil:#a6a6a6;--pencil-text:#6b6b6b;--red:#d32f2f;--red-wash:#fbeceb;--paper:#fcfbf7;--plate:#eef2fa;--ink-wash:#e7ecf7;--hand:\"Patrick Hand\",\"Comic Neue\",cursive;--text:\"Atkinson Hyperlegible Next\",system-ui,sans-serif;--mono:\"JetBrains Mono\",ui-monospace,monospace;--ease-out:cubic-bezier(0.16,1,0.3,1);} .ds-status{display:flex;align-items:center;gap:0.6rem;color:var(--ink-2);font:0.95rem/1.6 var(--text);} .ds-deck{color:var(--ink);} .ds-reel{transform-box:fill-box;transform-origin:center;animation:ds-spin 1.6s linear infinite;} @keyframes ds-spin{to{transform:rotate(360deg);}} .ds-counter{font-family:var(--hand);font-size:1.1rem;letter-spacing:0.08em;color:var(--ink);padding:0 0.35rem;border:1px solid var(--ink-faded);border-radius:3px;font-variant-numeric:tabular-nums;} @media (prefers-reduced-motion:reduce){.ds-reel{animation:none;}}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Cassette J-Card",
+    "overview": "The whole app is a cassette inlay filled in with a ballpoint pen. The conversation is side A, the sources behind each answer are the side B tracklist, and every conversation is a tape label in the flap. Everything is drawn in one blue ink on inlay white; the only other color is the brand stripe's red, which marks what is live: the active tape, the citations, the stripe itself, focus and errors.\n\nDensity is quiet and readable. Chrome is lettered in hand-drawn block caps, but the answer, which is long technical prose with code, is set in a highly legible sans at 17px and capped at 68ch. Reading comfort beats lettering whenever they disagree. Structure comes from 1.5px pen borders and printed rules, not from fills or shadows; the surface stays flat, like card stock.\n\nThe world refuses the grey-sidebar chat with source cards: sources are never cards, they are a numbered tracklist with right-aligned line ranges.",
+    "keyCharacteristics": [
+      "One blue ink family on inlay white; red only for what is live.",
+      "Patrick Hand block caps for every label, heading, button, track number and counter.",
+      "Atkinson Hyperlegible Next for reading; JetBrains Mono only for code and paths, ligatures off.",
+      "1.5px ballpoint borders carry the structure; surfaces are flat.",
+      "Printed 32px rules appear only on empty fields.",
+      "Signature: the Lado B tracklist paired with red cite chips, plus spinning reels and a tape counter while streaming."
+    ],
+    "rules": [
+      {
+        "name": "The Brand-Stripe Rule",
+        "body": "Red marks only what is live or must be noticed: the stripe, citations, the active tape or track, focus, the caret and errors. It never decorates.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Ink Rule",
+        "body": "All text and strokes come from the blue ink family or pencil. There is no black and no neutral grey text other than the legible pencil.",
+        "section": "colors"
+      },
+      {
+        "name": "The Pencil Rule",
+        "body": "Disabled and pending states are drawn in pencil: a pencil outline with pencil-text on inlay white, never a filled grey block.",
+        "section": "colors"
+      },
+      {
+        "name": "The Lettered Label Rule",
+        "body": "Patrick Hand is always uppercase and always short: headings, labels, numbers and buttons. It never sets a paragraph.",
+        "section": "typography"
+      },
+      {
+        "name": "The Reading Wins Rule",
+        "body": "Answer prose is Atkinson at 17px/1.6 within 68ch. Never letter an answer.",
+        "section": "typography"
+      },
+      {
+        "name": "The Literal Code Rule",
+        "body": "Mono appears only where the user reads code or a path, with ligatures off, so `===` shows as three characters.",
+        "section": "typography"
+      },
+      {
+        "name": "The Empty Field Ruling Rule",
+        "body": "Printed 32px rules (1px printed-rule lines) fill only empty space: the flap below the tape rows and the foot of the login's inside panel. They never run behind the answer column or any text.",
+        "section": "layout"
+      },
+      {
+        "name": "The Flat Inlay Rule",
+        "body": "Nothing else casts a shadow. Focus and hover are shown with ink or red strokes and washes, never with glow. The composer's focus is a red border, not a shadow.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do draw structure with the 1.5px ink pen border and divide rows with 1px printed rules.",
+      "Do keep red for live and attention states only: the stripe, cites, the active tape or track, focus, the caret and errors.",
+      "Do letter every label, heading, button and number in uppercase Patrick Hand, and set all reading text in Atkinson at 17px/1.6 within 68ch.",
+      "Do render sources as a numbered tracklist with right-aligned line ranges, paired with red cite chips in the answer.",
+      "Do run the stripe at the 64px line so it reads as one band across the spine and the top bar.",
+      "Do fill empty space, and only empty space, with the 32px printed ruling.",
+      "Do show disabled and pending states in pencil (outline plus pencil-text), never as a grey fill."
+    ],
+    "donts": [
+      "Don't render sources as cards, or put the chat in a grey sidebar.",
+      "Don't use red to decorate, or as a second accent for headings.",
+      "Don't run the ruled lines behind answers, code or any text.",
+      "Don't add shadows beyond the lifted j-card and the open flap; focus is a red stroke, not a glow.",
+      "Don't set paragraphs in Patrick Hand, or use mono for UI labels.",
+      "Don't enable ligatures in code or paths.",
+      "Don't use pencil (#a6a6a6) for text, or faded ink for small text."
+    ]
+  }
+}
